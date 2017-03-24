@@ -1,0 +1,25 @@
+/* You can add global styles to this file, and also import other style files */
+
+.boxed-container{
+    border: solid 1px black;
+    min-height: 200px;
+    padding: 20px;
+}
+
+.center{
+    text-align: center;
+}
+
+section.bottom-spacing{
+    margin-bottom: 20px;
+}
+
+//Grid styles
+.datagrid{
+    width: 99%;
+    height: 200px;
+}
+
+.datagrid--row{
+    border-bottom: solid 1px black;
+}

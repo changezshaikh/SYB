@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b8bd18e5d5ac4ea68fe49315284b8bfa" Name="Diagram1">
+        <EntityTypeShape EntityType="SaveYourBaconModel.AmountType" Width="1.5" PointX="3" PointY="7.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.ExpenseAccount" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.Expense" Width="1.5" PointX="5.25" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.Income" Width="1.5" PointX="8.25" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.IncomeSourceType" Width="1.5" PointX="3" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.TransactionPeriod" Width="1.5" PointX="3" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.Transaction" Width="1.5" PointX="5.25" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.TransactionType" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.User" Width="1.5" PointX="0.75" PointY="6.625" IsExpanded="true" />
+        <AssociationConnector Association="SaveYourBaconModel.Expenses_FK3" ManuallyRouted="false" />
+        <AssociationConnector Association="SaveYourBaconModel.Income_FK3" ManuallyRouted="false" />
+        <AssociationConnector Association="SaveYourBaconModel.ExpenseAccounts_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="SaveYourBaconModel.Expenses_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="SaveYourBaconModel.Expenses_FK2" ManuallyRouted="false" />
+        <AssociationConnector Association="SaveYourBaconModel.Income_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="SaveYourBaconModel.Income_FK2" ManuallyRouted="false" />
+        <AssociationConnector Association="SaveYourBaconModel.IncomeSourceTypes_FK1" ManuallyRouted="false" />
+        <AssociationConnector Association="SaveYourBaconModel.TransactionPeriods_FK" ManuallyRouted="false" />
+        <AssociationConnector Association="SaveYourBaconModel.Transactions_FK1" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.FrequencyType" Width="1.5" PointX="5.375" PointY="0.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

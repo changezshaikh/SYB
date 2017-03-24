@@ -1,0 +1,21 @@
+<section class="IncomeOverview bottom-spacing">
+  <span class="widget--header">Income Overview</span>
+  <div class="boxed-container">
+   <table id="incomeOverviewGrid" class="table table-condensed table-hover table-striped">
+      <thead>
+          <tr>
+              <th data-column-id="incomeSource">Income Source</th>
+              <th data-column-id="payDate">Pay Date</th>
+              <th data-column-id="frequency">Frequency</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let incomeRecord of income">
+            <td>{{incomeRecord.IncomeSourceType.IncomeSourceName}}</td>
+            <td>{{incomeRecord.IncomeDate | date: 'dd/MM/y'}}</td>
+            <td>{{incomeRecord.Frequency}}</td>
+          </tr>
+      </tbody>
+  </table>
+  </div>
+</section>

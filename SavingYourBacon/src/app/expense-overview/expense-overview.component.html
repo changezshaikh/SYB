@@ -1,0 +1,19 @@
+<section class="ExpenseOverview bottom-spacing">
+  <span class="widget--header">Expense Account Overview</span>
+  <div class="boxed-container">
+    <table id="expenseAccountGrid" class="table table-condensed table-hover table-striped">
+      <thead>
+          <tr>
+              <th data-column-id="expenseAccount">Expense Account</th>
+              <th data-column-id="totalAmount">Total Amount</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let expense of expenses">
+            <td>{{expense.ExpenseName}}</td>
+            <td>{{expense.BillAmount | currency:'USD':true}}</td>
+          </tr>
+      </tbody>
+  </table>
+  </div>
+</section>
