@@ -16,7 +16,7 @@ export class IncomeService {
   constructor(private http: Http) { }
 
   getIncome(userId): Observable<Income[]> {
-    return this.http.get(this.incomeUrl + '/' + userId)
+    return this.http.get(this.incomeUrl + '/getincomebyuserid/' + userId)
                     .map(res => res.json())
                     .catch(this.handleError);
   }

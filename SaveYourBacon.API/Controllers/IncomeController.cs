@@ -24,9 +24,9 @@ namespace SaveYourBacon.API.Controllers
 
         // GET: api/Income/5
         [ResponseType(typeof(Income))]
-        public IQueryable<Income> GetIncome(int userId)
+        public IQueryable<Income> GetIncomeByUserId(int id)
         {
-            return db.Incomes.Where(income => income.UserId == userId);
+            return db.Incomes.Where(income => income.UserId == id);
         }
 
         // PUT: api/Income/5

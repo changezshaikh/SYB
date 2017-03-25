@@ -3,6 +3,8 @@ import { Http, Response } from '@angular/http';
 
 import { Expense } from '../data-objects/expense';
 
+import { ExpenseType } from '../data-objects/expenseType';
+
 import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
@@ -12,18 +14,23 @@ import 'rxjs/add/operator/map';
 export class ExpenseService {
 
   private expenseUrl = 'http://localhost:55794/api/expenses';
-  private impDatesUrl = 'http://localhost:55794/api/impdates';
 
   constructor(private http: Http) { }
 
   getExpense(userId): Observable<Expense[]> {
-    return this.http.get(this.expenseUrl + "/" + userId)
+    return this.http.get(this.expenseUrl + "/getexpensebyuserid/" + userId)
+                    .map(res => res.json())
+                    .catch(this.handleError);
+  }
+
+  getExpenseTypes(userId): Observable<ExpenseType[]> {
+    return this.http.get(this.expenseUrl + "/GetExpenseAccountTypesForUser/" + userId)
                     .map(res => res.json())
                     .catch(this.handleError);
   }
 
   getImportantExpenseDates(userId){
-    return this.http.get(this.impDatesUrl + "/" + userId)
+    return this.http.get(this.expenseUrl + "/getimportantdatesforuser/" + userId)
                     .map(res => res.json())
                     .catch(this.handleError);
   }

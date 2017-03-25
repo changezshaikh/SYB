@@ -14,9 +14,13 @@ import { ExpenseOverviewComponent } from './expense-overview/expense-overview.co
 import { GoLiveDateComponent } from './go-live-date/go-live-date.component';
 import { ImportantDatesComponent } from './important-dates/important-dates.component';
 import { NotificationComponent } from './notification/notification.component';
+import { CreateExpenseComponent } from './create-expense/create-expense.component';
+import { CreateIncomeComponent } from './create-income/create-income.component';
 
 const appRoutes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'create-expense', component: CreateExpenseComponent },
+  { path: 'create-income', component: CreateIncomeComponent },
   { path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full'
@@ -33,7 +37,9 @@ const appRoutes: Routes = [
     ExpenseOverviewComponent,
     GoLiveDateComponent,
     ImportantDatesComponent,
-    NotificationComponent
+    NotificationComponent,
+    CreateExpenseComponent,
+    CreateIncomeComponent
   ],
   imports: [
     BrowserModule,

@@ -14,10 +14,6 @@ namespace SaveYourBacon.API.Controllers
         private SaveYourBaconEntities db = new SaveYourBaconEntities();
 
         // GET: api/ImpDates/5
-        [ResponseType(typeof(Expense))]
-        public IQueryable<Expense> GetImportantDatesForUser(int id)
-        {
-            return db.Expenses.Where(expense => expense.BillDate > DateTime.Now && expense.UserId == id);
-        }
+        
     }
 }

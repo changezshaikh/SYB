@@ -24,9 +24,21 @@ namespace SaveYourBacon.API.Controllers
 
         // GET: api/Expenses/5
         [ResponseType(typeof(Expense))]
-        public IQueryable<Expense> GetExpense(int userId)
+        public IQueryable<Expense> GetExpenseByUserId(int id)
         {
-            return db.Expenses.Where(expense => expense.UserId == userId);
+            return db.Expenses.Where(expense => expense.UserId == id);
+        }
+
+        [ResponseType(typeof(Expense))]
+        public IQueryable<Expense> GetImportantDatesForUser(int id)
+        {
+            return db.Expenses.Where(expense => expense.BillDate > DateTime.Now && expense.UserId == id);
+        }
+
+        [ResponseType(typeof(ExpenseAccount))]
+        public IQueryable<ExpenseAccount> GetExpenseAccountTypesForUser(int id)
+        {
+            return db.ExpenseAccounts.Where(expenseAccount => expenseAccount.UserId == id);
         }
 
         // PUT: api/Expenses/5

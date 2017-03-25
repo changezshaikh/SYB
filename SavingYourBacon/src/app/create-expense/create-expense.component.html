@@ -1,0 +1,70 @@
+<section class="CreateExpense">
+  <span class="widget--header">Create Expense</span>
+  <div class="boxed-container">
+    <form>
+      <div class="row">
+        
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="expenseAccount">Select Expense Account</label>
+            <select class="form-control" [(ngModel)] = "selectedExpenseType" name="expenseType" id="expenseType">
+              <option *ngFor="let type of expenseTypes" [value] = "type.ExpenseAccountId">
+                {{type.ExpenseAccountName}}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="expenseName">Create Expense Name</label>
+            <select class="form-control">
+              <option>Gas</option>
+              <option>Telstra</option>
+              <option>Add new expense</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="billAmount">Bill Amount</label>
+            <input type="text" name="billAmount" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="expenseType">Type of Expense</label>
+            <div class="radio">
+              <label>
+                <input type="radio" name="expenseType" id="optionsRadios1" value="option1" checked>
+                <span class="recurring--dropdown">
+                  Mark this expense as recurring?
+                  <select class="form-control">
+                    <option>Gas</option>
+                    <option>Telstra</option>
+                    <option>Add new expense</option>
+                  </select>
+
+                </span>
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="expenseType" id="optionsRadios2" value="option2">
+                Mark this expense as one time?
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="billDate">Bill Date</label>
+            <input type="text" name="billDate" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="frequency">Frequency</label>
+            <select class="form-control">
+              <option>Yearly</option>
+              <option>Half Yearly</option>
+              <option>Quarterly</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</section>
