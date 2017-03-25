@@ -14,6 +14,7 @@ import 'rxjs/add/operator/map';
 export class ExpenseService {
 
   private expenseUrl = 'http://localhost:55794/api/expenses';
+  private frequencyTypesUrl = "http://localhost:55794/api/frequencytypes/getfrequencytypes"; 
 
   constructor(private http: Http) { }
 
@@ -31,6 +32,12 @@ export class ExpenseService {
 
   getImportantExpenseDates(userId){
     return this.http.get(this.expenseUrl + "/getimportantdatesforuser/" + userId)
+                    .map(res => res.json())
+                    .catch(this.handleError);
+  }
+
+  getFrequencyTypes(){
+    return this.http.get(this.frequencyTypesUrl)
                     .map(res => res.json())
                     .catch(this.handleError);
   }
