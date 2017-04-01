@@ -1,0 +1,28 @@
+<section class="Incomes">
+  <div class="margin-bottom-20">
+    <button md-raised-button routerLink="/create-income">Create Income</button>
+  </div>
+  <p-dataTable [value]="income" [editable]="true" [responsive]="true" [stacked]="stacked" (onEditComplete)="handleIncomeEdit($event)">
+      <p-column field="IncomeSourceType.IncomeSourceName" header="Income Source" sortable="true"></p-column>
+      <p-column field="IncomeAmount" header="Bill Amount" sortable="true" [editable]="true">
+          <template let-col let-income="rowData" pTemplate="body">
+              {{income[col.field] ? (income[col.field] | currency:'USD':true) : ""}}
+          </template>
+      </p-column>
+      <p-column field="IncomeDate" header="Income Date" sortable="true">
+          <template let-col let-income="rowData" pTemplate="body">
+              {{income[col.field] | date: 'dd/MM/y'}}
+          </template>
+      </p-column>
+      <p-column field="Frequency" header="Frequency" sortable="true"></p-column>
+      <p-column field="LinkedExpenses" header="Linked Expenses"></p-column>
+      <p-column>
+        <template let-income="rowData" pTemplate="body">
+          <div class="button-row">
+            <button md-mini-fab routerLink="/create-income/{{income.IncomeId}}"><md-icon>edit</md-icon></button>
+            <button md-mini-fab (click)="deleteIncome(income)"><md-icon>delete</md-icon></button>
+          </div>
+        </template>
+      </p-column>
+  </p-dataTable>
+</section>

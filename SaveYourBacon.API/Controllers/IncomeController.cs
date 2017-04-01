@@ -29,9 +29,46 @@ namespace SaveYourBacon.API.Controllers
             return db.Incomes.Where(income => income.UserId == id);
         }
 
+        // GET: api/Income/5
+        [ResponseType(typeof(Income))]
+        public IQueryable<Income> GetIncome(int id)
+        {
+            return db.Incomes.Where(income => income.IncomeId == id);
+        }
+
         // PUT: api/Income/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutIncome(int id, Income income)
+        public IHttpActionResult PutIncome(Income income)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            db.Entry(income).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!IncomeExists(income.IncomeId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // PUT: api/Income/5
+        [ResponseType(typeof(void))]
+        public IHttpActionResult UpdateIncomeAmount(int id, Income income)
         {
             if (!ModelState.IsValid)
             {
@@ -72,6 +109,33 @@ namespace SaveYourBacon.API.Controllers
             {
                 return BadRequest(ModelState);
             }
+
+            Income i = db.Incomes.OrderByDescending(inc => inc.IncomeId).FirstOrDefault();
+            int newId = (null == i ? 1000 : i.IncomeId) + 1;
+
+            income.IncomeId = newId;
+
+            var incomeSourceType = new IncomeSourceType();
+
+            if(income.IncomeSourceTypeId < 0)
+            {
+                IncomeSourceType ist = db.IncomeSourceTypes.OrderByDescending(inc => inc.IncomeSourceTypeId).FirstOrDefault();
+                int newIstId = (null == i ? 1000 : ist.IncomeSourceTypeId) + 1;
+
+                incomeSourceType.IncomeSourceTypeId = newIstId;
+
+                incomeSourceType.IncomeSourceName = income.NewIncomeName;
+
+                incomeSourceType.UserId = income.UserId;
+
+                incomeSourceType.WhenCreated = DateTime.Now;
+
+                income.IncomeSourceTypeId = newIstId;
+
+                db.IncomeSourceTypes.Add(incomeSourceType);
+            }
+
+            income.WhenCreated = DateTime.Now;
 
             db.Incomes.Add(income);
 

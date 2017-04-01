@@ -23,7 +23,8 @@ namespace SaveYourBacon.API.Model
         public int UserId { get; set; }
         public int ExpenseAmountTypeId { get; set; }
         public System.DateTime WhenCreated { get; set; }
-    
+        public string NewIncomeName { get; set; }
+
         public virtual AmountType AmountType { get; set; }
         public virtual IncomeSourceType IncomeSourceType { get; set; }
         public virtual User User { get; set; }

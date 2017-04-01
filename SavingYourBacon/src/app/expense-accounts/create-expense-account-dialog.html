@@ -1,0 +1,21 @@
+<h1 class="mat-dialog-title">Create Expense Account</h1>
+<div class="mat-dialog-content">
+    <div class="form-group modal__body">
+        <div class="form-group">
+            <md-input-container>
+                <input mdInput placeholder="Expense Account" [(ngModel)] = "newExpenseAccount" name="newExpenseAccount">
+            </md-input-container>
+         </div>
+         <md-list class="modal--list">
+             <md-list-item class="bold-text">Expense Accounts</md-list-item>
+             <md-list-item *ngFor="let expenseAccount of expenseAccounts">
+                 {{expenseAccount.ExpenseAccountName}}
+             </md-list-item>
+         </md-list>
+         
+    </div>
+</div>
+<md-dialog-actions>
+    <button md-button (click)="closeDialog()">Cancel</button>
+    <button md-raised-button (click)="addExpenseAccount()">Add</button>
+</md-dialog-actions>

@@ -3,7 +3,15 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
-import {AgGridModule} from "ag-grid-angular/main";
+// used to create fake backend
+import { fakeBackendProvider } from './helpers/fake-backend';
+import { MockBackend, MockConnection } from '@angular/http/testing';
+import { BaseRequestOptions } from '@angular/http';
+
+import { DataTablesModule } from 'angular-datatables';
+import { MaterialModule } from '@angular/material';
+import {DataTableModule, CalendarModule, ListboxModule} from 'primeng/primeng';
+import 'hammerjs';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -14,13 +22,30 @@ import { ExpenseOverviewComponent } from './expense-overview/expense-overview.co
 import { GoLiveDateComponent } from './go-live-date/go-live-date.component';
 import { ImportantDatesComponent } from './important-dates/important-dates.component';
 import { NotificationComponent } from './notification/notification.component';
-import { CreateExpenseComponent } from './create-expense/create-expense.component';
-import { CreateIncomeComponent } from './create-income/create-income.component';
+import { CreateExpenseComponent, CreateExpenseDialog } from './create-expense/create-expense.component';
+import { CreateIncomeComponent, CreateIncomeDialog } from './create-income/create-income.component';
+import { CreateExpenseAccountComponent } from './create-expense-account/create-expense-account.component';
+import { ExpenseAccountsComponent, CreateExpenseAccountDialog } from './expense-accounts/expense-accounts.component';
+import { IncomesComponent } from './incomes/incomes.component';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './guards/auth.guard';
+import { AuthenticationService } from './services/authentication.service';
+import { UserService } from './services/user.service';
 
 const appRoutes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
+ 
+  // otherwise redirect to home
+  { path: '**', redirectTo: '' },
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'expense-accounts', component: ExpenseAccountsComponent },
+  { path: 'incomes', component: IncomesComponent },  
+  { path: 'create-expense-account', component: CreateExpenseAccountComponent },
   { path: 'create-expense', component: CreateExpenseComponent },
+  { path: 'create-expense/:id', component: CreateExpenseComponent },
   { path: 'create-income', component: CreateIncomeComponent },
+  { path: 'create-income/:id', component: CreateIncomeComponent },
   { path: '',
     redirectTo: '/dashboard',
     pathMatch: 'full'
@@ -39,16 +64,38 @@ const appRoutes: Routes = [
     ImportantDatesComponent,
     NotificationComponent,
     CreateExpenseComponent,
-    CreateIncomeComponent
+    CreateIncomeComponent,
+    CreateExpenseDialog,
+    CreateIncomeDialog,
+    CreateExpenseAccountDialog,
+    CreateExpenseAccountComponent,
+    ExpenseAccountsComponent,
+    IncomesComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
     JsonpModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    MaterialModule,
+    DataTablesModule,
+    DataTableModule,
+    CalendarModule,
+    ListboxModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    AuthGuard,
+    AuthenticationService,
+    UserService,
+
+    // providers used to create fake backend
+    fakeBackendProvider,
+    MockBackend,
+    BaseRequestOptions
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [CreateExpenseDialog, CreateIncomeDialog, CreateExpenseAccountDialog]
 })
 export class AppModule { }

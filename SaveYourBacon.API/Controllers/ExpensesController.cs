@@ -22,6 +22,13 @@ namespace SaveYourBacon.API.Controllers
             return db.Expenses;
         }
 
+        // GET: api/Income/5
+        [ResponseType(typeof(Expense))]
+        public IQueryable<Expense> GetExpense(int id)
+        {
+            return db.Expenses.Where(expense => expense.ExpenseId == id);
+        }
+
         // GET: api/Expenses/5
         [ResponseType(typeof(Expense))]
         public IQueryable<Expense> GetExpenseByUserId(int id)
@@ -35,24 +42,13 @@ namespace SaveYourBacon.API.Controllers
             return db.Expenses.Where(expense => expense.BillDate > DateTime.Now && expense.UserId == id);
         }
 
-        [ResponseType(typeof(ExpenseAccount))]
-        public IQueryable<ExpenseAccount> GetExpenseAccountTypesForUser(int id)
-        {
-            return db.ExpenseAccounts.Where(expenseAccount => expenseAccount.UserId == id);
-        }
-
         // PUT: api/Expenses/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutExpense(int id, Expense expense)
+        public IHttpActionResult PutExpense(Expense expense)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            if (id != expense.ExpenseId)
-            {
-                return BadRequest();
             }
 
             db.Entry(expense).State = EntityState.Modified;
@@ -63,7 +59,7 @@ namespace SaveYourBacon.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ExpenseExists(id))
+                if (!ExpenseExists(expense.ExpenseId))
                 {
                     return NotFound();
                 }
@@ -85,6 +81,11 @@ namespace SaveYourBacon.API.Controllers
                 return BadRequest(ModelState);
             }
 
+            Expense e = db.Expenses.OrderByDescending(ex => ex.ExpenseId).FirstOrDefault();
+            int newId = (null == e ? 1000 : e.ExpenseId) + 1;
+
+            expense.ExpenseId = newId;
+
             db.Expenses.Add(expense);
 
             try
@@ -105,6 +106,49 @@ namespace SaveYourBacon.API.Controllers
 
             return CreatedAtRoute("DefaultApi", new { id = expense.ExpenseId }, expense);
         }
+
+        //// POST: api/Expenses
+        //[ResponseType(typeof(void))]
+        //public IHttpActionResult PostExpense(string expenseAccountId, string expenseName, string userId, string frequency, string billAmount, string billDate, string expenseAmountTypeId)
+        //{
+        //    if (!string.IsNullOrEmpty(expenseAccountId) || !string.IsNullOrEmpty(expenseName))
+        //    {
+        //        return StatusCode(HttpStatusCode.BadRequest);
+        //    }
+
+        //    var expense = new Expense()
+        //    {
+        //        ExpenseAccountId = int.Parse(expenseAccountId),
+        //        ExpenseName = expenseName,
+        //        UserId = Convert.ToInt32(userId),
+        //        Frequency = frequency,
+        //        BillAmount = Convert.ToDecimal(billAmount),
+        //        BillDate = Convert.ToDateTime(billDate),
+        //        ExpenseAmountTypeId = Convert.ToInt32(expenseAmountTypeId)
+        //    };
+
+        //    db.Expenses.Add(expense);
+
+        //    try
+        //    {
+        //        db.SaveChanges();
+        //    }
+        //    catch (DbUpdateException)
+        //    {
+        //        if (ExpenseExists(expense.ExpenseId))
+        //        {
+        //            return Conflict();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return CreatedAtRoute("DefaultApi", new { id = expense.ExpenseId }, expense);
+
+        //    //return StatusCode(HttpStatusCode.NoContent);
+        //}
 
         // DELETE: api/Expenses/5
         [ResponseType(typeof(Expense))]

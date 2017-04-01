@@ -1,4 +1,10 @@
+@import '~@angular/material/core/theming/prebuilt/deeppurple-amber.css';
+
 /* You can add global styles to this file, and also import other style files */
+
+body{
+    padding-top: 70px;
+}
 
 .boxed-container{
     border: solid 1px black;
@@ -10,8 +16,46 @@
     text-align: center;
 }
 
+.bold-text{
+    font-weight: bold;
+}
+
 section.bottom-spacing{
     margin-bottom: 20px;
+}
+
+.margin-top-20{
+    margin-top: 20px;
+}
+
+.margin-bottom-20{
+    margin-bottom: 20px;
+}
+
+.radio-group-vertical{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .radio-button{
+        margin: 5px;
+    }
+}
+
+.full-width-form-control{
+    width: 100%;
+}
+
+.mat-input-placeholder, .mat-radio-label-content, .form-group label{
+    font-weight: 300 !important;
+}
+
+.mat-chip{
+    outline: none;
+}
+
+.ui-datatable a {
+   text-decoration: none !important;
 }
 
 //Grid styles
@@ -23,3 +67,14 @@ section.bottom-spacing{
 .datagrid--row{
     border-bottom: solid 1px black;
 }
+
+.modal__body{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal--list{
+    margin: 0 20px;
+}
+

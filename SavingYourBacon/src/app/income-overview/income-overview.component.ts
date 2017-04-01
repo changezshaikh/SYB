@@ -33,16 +33,4 @@ export class IncomeOverviewComponent implements OnInit {
                                     error =>  this.errorMessage = <any>error);
   }
 
-  ngAfterViewInit(): void{
-      $(document).ready(function(){
-          
-            $("#incomeOverviewGrid").DataTable({
-              "paging":   false,
-              "info":     false
-           });
-    
-        });
-     
-  }
-
 }

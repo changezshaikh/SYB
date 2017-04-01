@@ -5,6 +5,12 @@ import { Income } from '../data-objects/income';
 
 import { Observable } from 'rxjs/Observable';
 
+import { IncomeRecord } from '../data-objects/incomeRecord';
+
+import { Headers, RequestOptions } from '@angular/http';
+
+import dateUtils from '../utilities/dateUtilities';
+
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
@@ -21,10 +27,59 @@ export class IncomeService {
                     .catch(this.handleError);
   }
 
-  // private extractData(res: Response) {
-  //   let body = res.json();
-  //   return body.data || { };
-  // }
+  getIncomeForEdit(incomeId: number): Observable<Income> {
+    return this.http.get(this.incomeUrl + '/getincome/' + incomeId)
+                    .map(res => res.json())
+                    .catch(this.handleError);
+  }
+
+  addIncomeForUser(incomeRecord: IncomeRecord){
+
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    //let incomeDate = dateUtils.parseDateString(incomeRecord.incomeDate);
+
+    return this.http.post(this.incomeUrl + "/postincome", 
+                          { incomeSourceTypeId: incomeRecord.IncomeSourceTypeId, 
+                            newIncomeName: incomeRecord.IncomeName, 
+                            userId: incomeRecord.UserId, 
+                            frequency: incomeRecord.Frequency, 
+                            incomeAmount: incomeRecord.IncomeAmount, 
+                            incomeDate: incomeRecord.IncomeDate.toString(),
+                            linkedExpenses: incomeRecord.LinkedExpenses,
+                            expenseAmountTypeId: incomeRecord.ExpenseAmountTypeId }, 
+                          options)
+                          .map(res => res.json())
+                          .catch(this.handleError);
+  }
+
+  updateIncome(incomeRecord: IncomeRecord){
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    //let incomeDate = dateUtils.parseDateString(incomeRecord.incomeDate);
+
+    return this.http.put(this.incomeUrl + "/putincome", 
+                          { incomeId: incomeRecord.IncomeId,
+                            incomeSourceTypeId: incomeRecord.IncomeSourceTypeId, 
+                            newIncomeName: incomeRecord.IncomeName, 
+                            userId: incomeRecord.UserId, 
+                            frequency: incomeRecord.Frequency, 
+                            incomeAmount: incomeRecord.IncomeAmount, 
+                            incomeDate: incomeRecord.IncomeDate.toString(),
+                            linkedExpenses: incomeRecord.LinkedExpenses,
+                            expenseAmountTypeId: incomeRecord.ExpenseAmountTypeId }, 
+                          options)
+                          .map(res => res.json())
+                          .catch(this.handleError);
+  }
+
+  deleteIncome(incomeId: number){
+    return this.http.delete(this.incomeUrl + "/deleteincome/" + incomeId)
+                          .map(res => res.json())
+                          .catch(this.handleError);
+  }
 
   private handleError (error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure

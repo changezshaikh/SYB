@@ -5,7 +5,15 @@ import { Expense } from '../data-objects/expense';
 
 import { ExpenseType } from '../data-objects/expenseType';
 
+import { ExpenseRecord } from '../data-objects/expenseRecord';
+
+import { ExpenseAccountType } from '../data-objects/expenseAccountType';
+
+import dateUtils from '../utilities/dateUtilities';
+
 import { Observable } from 'rxjs/Observable';
+
+import { Headers, RequestOptions } from '@angular/http';
 
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
@@ -14,7 +22,7 @@ import 'rxjs/add/operator/map';
 export class ExpenseService {
 
   private expenseUrl = 'http://localhost:55794/api/expenses';
-  private frequencyTypesUrl = "http://localhost:55794/api/frequencytypes/getfrequencytypes"; 
+  private expenseAccountsUrl = 'http://localhost:55794/api/expenseaccounts'; 
 
   constructor(private http: Http) { }
 
@@ -25,7 +33,7 @@ export class ExpenseService {
   }
 
   getExpenseTypes(userId): Observable<ExpenseType[]> {
-    return this.http.get(this.expenseUrl + "/GetExpenseAccountTypesForUser/" + userId)
+    return this.http.get(this.expenseAccountsUrl + "/GetExpenseAccountTypesForUser/" + userId)
                     .map(res => res.json())
                     .catch(this.handleError);
   }
@@ -36,10 +44,66 @@ export class ExpenseService {
                     .catch(this.handleError);
   }
 
-  getFrequencyTypes(){
-    return this.http.get(this.frequencyTypesUrl)
+  addExpenseForUser(expenseRecord: ExpenseRecord){
+
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.post(this.expenseUrl + "/postexpense", 
+                          { expenseAccountId: expenseRecord.ExpenseAccountId, 
+                            expenseName: expenseRecord.ExpenseName, 
+                            userId: expenseRecord.UserId, 
+                            frequency: expenseRecord.Frequency, 
+                            billAmount: expenseRecord.BillAmount, 
+                            billDate: expenseRecord.BillDate,
+                            expenseAmountTypeId: expenseRecord.ExpenseAmountTypeId }, 
+                          options)
+                          .map(res => res.json())
+                          .catch(this.handleError);
+  }
+
+  updateExpense(expenseRecord: ExpenseRecord){
+
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.put(this.expenseUrl + "/putexpense", 
+                          { expenseId: expenseRecord.ExpenseId,
+                            expenseAccountId: expenseRecord.ExpenseAccountId, 
+                            expenseName: expenseRecord.ExpenseName, 
+                            userId: expenseRecord.UserId, 
+                            frequency: expenseRecord.Frequency, 
+                            billAmount: expenseRecord.BillAmount, 
+                            billDate: expenseRecord.BillDate,
+                            expenseAmountTypeId: expenseRecord.ExpenseAmountTypeId }, 
+                          options)
+                          .map(res => res.json())
+                          .catch(this.handleError);
+  }
+
+  addExpenseAccountForUser(expenseType: ExpenseAccountType){
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.post(this.expenseAccountsUrl + "/postexpenseaccount", 
+                          { expenseAccountName: expenseType.expenseAccountName, 
+                            userId: expenseType.userId }, 
+                          options)
+                          .map(res => res.json())
+                          .catch(this.handleError);
+
+  }
+
+  getExpenseForEdit(incomeId: number): Observable<Expense> {
+    return this.http.get(this.expenseUrl + '/getexpense/' + incomeId)
                     .map(res => res.json())
                     .catch(this.handleError);
+  }
+
+  deleteExpense(expenseId: number){
+    return this.http.delete(this.expenseUrl + "/deleteexpense/" + expenseId)
+                          .map(res => res.json())
+                          .catch(this.handleError);
   }
 
   private handleError (error: Response | any) {

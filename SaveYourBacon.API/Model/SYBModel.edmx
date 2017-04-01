@@ -27,7 +27,7 @@
           <Key>
             <PropertyRef Name="ExpenseId" />
           </Key>
-          <Property Name="ExpenseId" Type="int" Nullable="false" />
+          <Property Name="ExpenseId" Type="int" Nullable="false" StoreGeneratedPattern="None" />
           <Property Name="ExpenseAccountId" Type="int" Nullable="false" />
           <Property Name="ExpenseName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
@@ -318,7 +318,7 @@
           <Key>
             <PropertyRef Name="ExpenseId" />
           </Key>
-          <Property Name="ExpenseId" Type="Int32" Nullable="false" />
+          <Property Name="ExpenseId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Name="ExpenseAccountId" Type="Int32" Nullable="false" />
           <Property Name="ExpenseName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="UserId" Type="Int32" Nullable="false" />

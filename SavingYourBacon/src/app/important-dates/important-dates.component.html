@@ -1,23 +1,19 @@
 <section class="ImportantDates bottom-spacing">
   <span class="widget--header">Important Dates</span>
   <div class="boxed-container">
-    <table id="importantDatesGrid" class="table table-condensed table-hover table-striped">
-      <thead>
-          <tr>
-              <th data-column-id="expenseAccount">Expense Account</th>
-              <th data-column-id="expense">Expense</th>
-              <th data-column-id="expenseDueDate" data-order="asc">Due On</th>
-              <th data-column-id="billAmount">Bill Amount</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr *ngFor="let expense of importantDates">
-            <td>{{expense.ExpenseAccount.ExpenseAccountName}}</td>
-            <td>{{expense.ExpenseName}}</td>
-            <td>{{expense.BillDate | date: 'dd/MM/y'}}</td>
-            <td>{{expense.BillAmount | currency:"USD":true}}</td>
-          </tr>
-      </tbody>
-  </table>
+    <p-dataTable [value]="importantDates">
+        <p-column field="ExpenseAccount.ExpenseAccountName" header="Expense Account" sortable="true"></p-column>
+        <p-column field="ExpenseName" header="Expense" sortable="true"></p-column>
+        <p-column field="BillDate" header="Due On" sortable="true">
+            <template let-col let-car="rowData" pTemplate="body">
+                {{car[col.field] | date: 'dd/MM/y'}}
+            </template>
+        </p-column>
+        <p-column field="BillAmount" header="Bill Amount" sortable="true">
+            <template let-col let-car="rowData" pTemplate="body">
+                {{car[col.field] | currency:'USD':true}}
+            </template>
+        </p-column>
+    </p-dataTable>
   </div>
 </section>

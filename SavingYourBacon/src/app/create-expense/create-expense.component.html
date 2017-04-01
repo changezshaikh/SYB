@@ -4,67 +4,61 @@
     <form>
       <div class="row">
         
-        <div class="col-md-6">
+        <div class="col-md-12">
           <div class="form-group">
-            <label for="expenseAccount">Select Expense Account</label>
-            <select class="form-control" [(ngModel)] = "selectedExpenseType" name="expenseType" id="expenseType">
-              <option value="-1">Please select an option</option>
-              <option *ngFor="let type of expenseTypes" [value] = "type.ExpenseAccountId">
+            <md-select placeholder="Select Expense Account" [(ngModel)]="selectedExpenseAccount" name="expenseType" class="full-width-form-control" (change)="updateExpenseNames($event.value)">
+              <md-option *ngFor="let type of expenseTypes" [value]="type.ExpenseAccountId">
                 {{type.ExpenseAccountName}}
-              </option>
-            </select>
+              </md-option>
+            </md-select>
           </div>
           <div class="form-group">
-            <label for="expenseName">Create Expense Name</label>
-            <select class="form-control" [(ngModel)]="selectedExpenseName" id="expenseName" name="expenseName">
-              <option value="-1">Please select an option</option>
-              <option *ngFor="let type of expenseTypes" [value] = "type.ExpenseAccountId">
-                {{type.ExpenseAccountName}}
-              </option>
-              <option>Add new expense</option>
-            </select>
+            <md-select placeholder="Create Expense Name" [(ngModel)]="selectedExpenseName" name="expenseName" class="full-width-form-control">
+              <md-option *ngFor="let name of expenseAccountForNames.Expenses" [value]="name.ExpenseName">
+                {{name.ExpenseName}}
+              </md-option>
+              <md-option value="-1" (click)="openDialog()">
+                Add New
+              </md-option>
+            </md-select>
+            <md-chip-list class="mat-chip-list-stacked chip--list" *ngIf="newExpenseName">
+              <md-chip selected="true" color="primary">
+                {{newExpenseName}}
+              </md-chip>
+            </md-chip-list>
           </div>
           <div class="form-group">
-            <label for="billAmount">Bill Amount</label>
-            <input type="text" name="billAmount" class="form-control" [(ngModel)] = "billAmount">
+            <md-input-container class="full-width-form-control">
+              <input mdInput placeholder="Bill Amount" [(ngModel)] = "billAmount" name="billAmount">
+            </md-input-container>
           </div>
           <div class="form-group">
             <label for="expenseType">Type of Expense</label>
-            <div class="radio">
-              <label>
-                <input type="radio" name="expenseType" id="optionsRadios1" value="option1" checked>
-                <span class="recurring--dropdown">
-                  Mark this expense as recurring?
-                  <select class="form-control">
-                    <option>Gas</option>
-                    <option>Telstra</option>
-                    <option>Add new expense</option>
-                  </select>
-
-                </span>
-              </label>
-            </div>
-            <div class="radio">
-              <label>
-                <input type="radio" name="expenseType" id="optionsRadios2" value="option2">
-                Mark this expense as one time?
-              </label>
-            </div>
+            <md-radio-group [(ngModel)]="selectedExpenseType" name="expenseTypes" class="radio-group-vertical">
+              <md-radio-button *ngFor="let option of expenseTypeOptions" [value]="option.id" class="radio-button">
+                {{option.value}}
+              </md-radio-button>
+            </md-radio-group>
+            <md-select placeholder="Variable/Fixed" [(ngModel)]="recurringType" name="recurringType" class="subtype--dropdown" *ngIf="selectedExpenseType == -1">
+              <md-option *ngFor="let type of recurringTypes" [value]="type.id">
+                {{type.value}}
+              </md-option>
+            </md-select>
+          </div>
+          <div class="form-group">
+            <p-calendar [(ngModel)]="billDate" dateFormat="dd/mm/yy" name="billDate"></p-calendar>
+          </div>
+          <div class="form-group">
+            <md-select placeholder="Frequency" [(ngModel)]="selectedFrequencyType" name="frequencyType" class="full-width-form-control">
+              <md-option *ngFor="let type of frequencyTypes" [value]="type.FrequencyName">
+                {{type.FrequencyName}}
+              </md-option>
+            </md-select>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="billDate">Bill Date</label>
-            <input type="text" name="billDate" class="form-control" [(ngModel)] = "billDate">
-          </div>
-          <div class="form-group">
-            <label for="frequency">Frequency</label>
-            <select placeholder="placeHolder" class="form-control" [(ngModel)] = "selectedFrequencyType" name="frequencyType" id="frequencyType">
-              <option *ngFor="let type of frequencyTypes" [value] = "type.FrequencyId">
-                {{type.FrequencyName}}
-              </option>
-            </select>
-          </div>
+        <div class="col-md-12 button__container">
+          <button md-button routerLink="/expense-accounts">Cancel</button>
+          <button md-raised-button (click)="saveExpenseRecord()">{{isInEditMode? 'Save':'Add'}}</button>
         </div>
 
       </div>

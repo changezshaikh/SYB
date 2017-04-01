@@ -24,7 +24,7 @@ export class ExpenseOverviewComponent implements OnInit {
   }
 
   ngOnInit() {
-      this.getExpenses();
+    this.getExpenses();
   }
 
   getExpenses(){
@@ -34,14 +34,6 @@ export class ExpenseOverviewComponent implements OnInit {
   }
 
   ngAfterViewInit(): void{
-      $(document).ready(function(){
-          
-            $("#expenseAccountGrid").DataTable({
-              "paging":   false,
-              "info":     false
-           });
-    
-        });
      
   }
 
