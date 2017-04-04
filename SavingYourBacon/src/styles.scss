@@ -6,10 +6,26 @@ body{
     padding-top: 70px;
 }
 
+body > .inner {
+  display: none;
+}
+
+body.pg-loaded > .inner {
+  display: block;
+}
+
 .boxed-container{
     border: solid 1px black;
-    min-height: 200px;
+    min-height: 150px;
     padding: 20px;
+}
+
+.datagrid__container{
+    border: none;
+    height: 164px;
+    padding: 0;
+    overflow-y: auto;
+    margin: 20px 0;
 }
 
 .center{

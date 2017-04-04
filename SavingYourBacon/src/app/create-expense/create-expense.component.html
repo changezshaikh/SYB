@@ -1,8 +1,8 @@
 <section class="CreateExpense">
   <span class="widget--header">Create Expense</span>
   <div class="boxed-container">
-    <form>
-      <div class="row">
+    
+      <div class="row" *ngIf="!addPreviousBills">
         
         <div class="col-md-12">
           <div class="form-group">
@@ -62,6 +62,42 @@
         </div>
 
       </div>
-    </form>
+      <div class="row" *ngIf="addPreviousBills">
+        
+        <div class="col-md-12">
+          <div class="col-md-6">
+            <div class="form-group">
+              <p-calendar [(ngModel)]="previousBillDate" dateFormat="dd/mm/yy" name="previousBillDate" placeholder="Previous Bill Date"></p-calendar>
+            </div>
+            <div class="form-group">
+              <md-input-container class="full-width-form-control">
+                <input mdInput placeholder="Previous Bill Amount" [(ngModel)] = "previousBillAmount" name="previousBillAmount">
+              </md-input-container>
+            </div>
+            <div class="button__container">
+              <button md-raised-button (click)="addPreviousBill()">Add</button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <p-dataTable [value]="previousBills" *ngIf="previousBills.length">
+              <p-column field="BillDate" header="Bill Date" sortable="true">
+                <template let-col let-bill="rowData" pTemplate="body">
+                  {{bill[col.field] | date: 'dd/MM/y'}}
+                </template>
+              </p-column>
+              <p-column field="BillAmount" header="Bill Amount" sortable="true">
+                  <template let-col let-car="rowData" pTemplate="body">
+                      {{car[col.field] | currency:'USD':true}}
+                  </template>
+              </p-column>
+            </p-dataTable>
+          </div>
+        </div>
+        <div class="col-md-12 button__container">
+          <button md-button routerLink="/expense-accounts">Cancel</button>
+          <button md-raised-button (click)="savePreviousBills()">Save</button>
+        </div>
+
+      </div>
   </div>
 </section>

@@ -24,31 +24,32 @@ import { ImportantDatesComponent } from './important-dates/important-dates.compo
 import { NotificationComponent } from './notification/notification.component';
 import { CreateExpenseComponent, CreateExpenseDialog } from './create-expense/create-expense.component';
 import { CreateIncomeComponent, CreateIncomeDialog } from './create-income/create-income.component';
-import { CreateExpenseAccountComponent } from './create-expense-account/create-expense-account.component';
 import { ExpenseAccountsComponent, CreateExpenseAccountDialog } from './expense-accounts/expense-accounts.component';
+import { ConfirmDialogComponent } from './common/confirm-dialog.component';
 import { IncomesComponent } from './incomes/incomes.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthenticationService } from './services/authentication.service';
 import { UserService } from './services/user.service';
+import { MyAccountComponent } from './my-account/my-account.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
+  // { path: '', component: DashboardComponent, canActivate: [AuthGuard] },
  
-  // otherwise redirect to home
-  { path: '**', redirectTo: '' },
+  // // otherwise redirect to home
+  // { path: '**', redirectTo: '' },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'expense-accounts', component: ExpenseAccountsComponent },
-  { path: 'incomes', component: IncomesComponent },  
-  { path: 'create-expense-account', component: CreateExpenseAccountComponent },
+  { path: 'incomes', component: IncomesComponent },
   { path: 'create-expense', component: CreateExpenseComponent },
   { path: 'create-expense/:id', component: CreateExpenseComponent },
   { path: 'create-income', component: CreateIncomeComponent },
   { path: 'create-income/:id', component: CreateIncomeComponent },
+  { path: 'my-account', component: MyAccountComponent },  
   { path: '',
-    redirectTo: '/dashboard',
-    pathMatch: 'full'
+    redirectTo: '/login',
+    pathMatch: 'full', canActivate: [AuthGuard]
   }
 ];
 
@@ -68,10 +69,11 @@ const appRoutes: Routes = [
     CreateExpenseDialog,
     CreateIncomeDialog,
     CreateExpenseAccountDialog,
-    CreateExpenseAccountComponent,
+    ConfirmDialogComponent,
     ExpenseAccountsComponent,
     IncomesComponent,
-    LoginComponent
+    LoginComponent,
+    MyAccountComponent
   ],
   imports: [
     BrowserModule,
@@ -90,12 +92,12 @@ const appRoutes: Routes = [
     AuthenticationService,
     UserService,
 
-    // providers used to create fake backend
-    fakeBackendProvider,
-    MockBackend,
+    // // providers used to create fake backend
+    // fakeBackendProvider,
+    // MockBackend,
     BaseRequestOptions
   ],
   bootstrap: [AppComponent],
-  entryComponents: [CreateExpenseDialog, CreateIncomeDialog, CreateExpenseAccountDialog]
+  entryComponents: [CreateExpenseDialog, CreateIncomeDialog, CreateExpenseAccountDialog, ConfirmDialogComponent]
 })
 export class AppModule { }

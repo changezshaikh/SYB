@@ -1,28 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-
 import { Expense } from '../data-objects/expense';
-
 import { ExpenseType } from '../data-objects/expenseType';
-
 import { ExpenseRecord } from '../data-objects/expenseRecord';
-
 import { ExpenseAccountType } from '../data-objects/expenseAccountType';
-
 import dateUtils from '../utilities/dateUtilities';
-
 import { Observable } from 'rxjs/Observable';
-
 import { Headers, RequestOptions } from '@angular/http';
-
+import { Constants } from '../common/constants';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class ExpenseService {
 
-  private expenseUrl = 'http://localhost:55794/api/expenses';
-  private expenseAccountsUrl = 'http://localhost:55794/api/expenseaccounts'; 
+  private expenseUrl = Constants.ApiLocation + '/api/expenses';
+  private expenseAccountsUrl = Constants.ApiLocation + '/api/expenseaccounts';
 
   constructor(private http: Http) { }
 

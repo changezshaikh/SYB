@@ -11,13 +11,15 @@ import { Headers, RequestOptions } from '@angular/http';
 
 import dateUtils from '../utilities/dateUtilities';
 
+import { Constants } from '../common/constants';
+
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class IncomeService {
 
-  private incomeUrl = 'http://localhost:55794/api/income';
+  private incomeUrl = Constants.ApiLocation + '/api/income';
 
   constructor(private http: Http) { }
 

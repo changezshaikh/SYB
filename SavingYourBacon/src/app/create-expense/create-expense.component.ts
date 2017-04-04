@@ -2,21 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { SelectOption } from '../data-objects/selectOption';
 import { ExpenseType } from '../data-objects/expenseType';
 import { ExpenseRecord } from '../data-objects/expenseRecord';
+import { Transaction } from '../data-objects/transaction';
 import { ExpenseService } from '../services/expense.service';
 import { UtilityService } from '../services/utility.service';
-import {MdDialog, MdDialogRef, MdSnackBar} from '@angular/material';
-import {CalendarModule} from 'primeng/primeng';
-import {Router, ActivatedRoute, Params} from '@angular/router';
+import { TransactionService } from '../services/transaction.service';
+import { MdDialog, MdDialogRef, MdSnackBar } from '@angular/material';
+import { CalendarModule } from 'primeng/primeng';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import recordUtils from '../utilities/recordUtilities';
 import dateUtils from '../utilities/dateUtilities';
+import { ConfirmDialogComponent } from '../common/confirm-dialog.component';
+import { ConfirmDialog as ConfirmDialogModel } from '../data-objects/confirmDialog';
+import { Constants } from '../common/constants';
 
-declare let _:any;
+declare let _: any;
 
 @Component({
   selector: 'create-expense',
   templateUrl: './create-expense.component.html',
   styleUrls: ['./create-expense.component.scss'],
-  providers: [ExpenseService, UtilityService]
+  providers: [ExpenseService, UtilityService, TransactionService]
 })
 export class CreateExpenseComponent implements OnInit {
 
@@ -42,7 +47,15 @@ export class CreateExpenseComponent implements OnInit {
   newExpenseName: string;
   selectedExpenseId: number = 0;
 
-  constructor(private expenseService: ExpenseService, public dialog: MdDialog, private utilityService: UtilityService, private router:Router, private activatedRoute: ActivatedRoute, public snackBar: MdSnackBar) { }
+  // property controlling which view is shown to the user
+  addPreviousBills: boolean = false;
+
+  previousBills = [];
+  previousBillDate: Date;
+  previousBillAmount: string;
+
+  constructor(private expenseService: ExpenseService, public dialog: MdDialog, private utilityService: UtilityService, private router: Router, 
+              private activatedRoute: ActivatedRoute, public snackBar: MdSnackBar, private transactionService: TransactionService) { }
 
   ngOnInit() {
 
@@ -52,23 +65,23 @@ export class CreateExpenseComponent implements OnInit {
     this.getExpenseTypesForUser();
     this.getFrequencyTypes();
 
-     // subscribe to router event
+    // subscribe to router event
     this.activatedRoute.params.subscribe((params: Params) => {
       let expenseId = params['id'];
 
-      if(expenseId){
+      if (expenseId) {
         this.expenseService.getExpenseForEdit(expenseId)
-                          .subscribe(data => {
-                            if(data){
-                              this.populateFormForEdit(data[0]);
-                            }
-                          },
-                          error => this.errorMessage = <any>error);
+          .subscribe(data => {
+            if (data) {
+              this.populateFormForEdit(data[0]);
+            }
+          },
+          error => this.errorMessage = <any>error);
       }
     });
   }
 
-  populateFormForEdit(expense){
+  populateFormForEdit(expense) {
     this.isInEditMode = true;
     this.selectedExpenseId = expense.ExpenseId;
     this.selectedExpenseType = expense.ExpenseTypeId;
@@ -78,48 +91,48 @@ export class CreateExpenseComponent implements OnInit {
     this.billAmount = expense.BillAmount;
     this.billDate = new Date(expense.BillDate);
     this.selectedFrequencyType = expense.Frequency;
-    
+
     let isRecurring = true;
-    _.each(this.expenseTypeOptions, function(option){
-      if(option.id == expense.ExpenseAmountTypeId){
+    _.each(this.expenseTypeOptions, function (option) {
+      if (option.id == expense.ExpenseAmountTypeId) {
         isRecurring = false;
-      } 
+      }
     });
 
-    if(isRecurring){
+    if (isRecurring) {
       this.selectedExpenseType = -1;
       this.recurringType = expense.ExpenseAmountTypeId;
-    } else{
+    } else {
       this.selectedExpenseType = expense.ExpenseAmountTypeId;
     }
   }
 
-  getExpenseTypesForUser(){
-      this.expenseService.getExpenseTypes(this.userId)
-                        .subscribe(data => this.expenseTypes = data,
-                                    error =>  this.errorMessage = <any>error);
+  getExpenseTypesForUser() {
+    this.expenseService.getExpenseTypes(this.userId)
+      .subscribe(data => this.expenseTypes = data,
+      error => this.errorMessage = <any>error);
   }
 
-  getExistingExpenseTypesForUser(){
+  getExistingExpenseTypesForUser() {
     let that = this;
     this.expenseService.getExpenseTypes(this.userId)
-                      .subscribe(data => {
-                                            that.expenseTypes = data;
-                                            that.updateExpenseNames(this.expenseTypes[0]);
-                                          },
-                                  error =>  this.errorMessage = <any>error);
+      .subscribe(data => {
+        that.expenseTypes = data;
+        that.updateExpenseNames(this.expenseTypes[0]);
+      },
+      error => this.errorMessage = <any>error);
   }
 
-  getFrequencyTypes(){
+  getFrequencyTypes() {
     this.utilityService.getFrequencyTypes()
-                        .subscribe(data => this.frequencyTypes = data,
-                                    error =>  this.errorMessage = <any>error);
+      .subscribe(data => this.frequencyTypes = data,
+      error => this.errorMessage = <any>error);
   }
 
-  updateExpenseNames(value){
+  updateExpenseNames(value) {
     this.selectedExpenseName = null;
     this.newExpenseName = null;
-    if(this.expenseTypes){
+    if (this.expenseTypes) {
       this.expenseAccountForNames = this.expenseTypes.filter((option) => {
         return option.ExpenseAccountId == value;
       })[0];
@@ -133,7 +146,23 @@ export class CreateExpenseComponent implements OnInit {
     });
   }
 
-  saveExpenseRecord(){
+  confirmPreviousBillsDialog() {
+    let model: ConfirmDialogModel = { Title: "Do you want to add previous " + (this.selectedExpenseName == "-1" ? this.newExpenseName : this.selectedExpenseName) + " bills?", Body: "" };
+    let result = false;
+    let dialogRef = this.dialog.open(ConfirmDialogComponent, { data: model });
+    let that = this;
+    dialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        that.addPreviousBills = true;
+        that.snackBar.open('Record Saved successfully!', '', { duration: 2000 });
+      } else {
+        that.router.navigateByUrl('/expense-accounts');
+      }
+
+    }, error => this.errorMessage = <any>error);
+  }
+
+  saveExpenseRecord() {
 
     let expenseRecord: ExpenseRecord = {
       ExpenseId: this.selectedExpenseId,
@@ -148,24 +177,58 @@ export class CreateExpenseComponent implements OnInit {
 
     let that = this;
 
-    if(this.isInEditMode){
+    if (this.isInEditMode) {
       this.expenseService.updateExpense(expenseRecord)
-                          .subscribe(function(){
-                                      that.snackBar.open('Record Saved successfully!', '', { duration: 1000 });                                
-                                    },
-                                      error =>  this.errorMessage = <any>error);
+        .subscribe(function () {
+          that.confirmPreviousBillsDialog();
+        },
+        error => this.errorMessage = <any>error);
 
-    } else{
+    } else {
       this.expenseService.addExpenseForUser(expenseRecord)
-                        .subscribe(function(){
-                                    that.router.navigateByUrl('/expense-accounts');                                
-                                  },
-                                    error =>  this.errorMessage = <any>error);
+        .subscribe(function (data) {
+          that.selectedExpenseId = data.ExpenseId;
+          that.confirmPreviousBillsDialog();
+        },
+        error => this.errorMessage = <any>error);
 
     }
+  }
 
-    
-    
+  addPreviousBill() {
+    this.previousBills.push({ BillDate: this.previousBillDate, BillAmount: this.previousBillAmount });
+    this.previousBillDate = null;
+    this.previousBillAmount = "";
+  }
+
+  savePreviousBills() {
+    let that = this;
+    let transactionList: Transaction[] = [];
+
+    this.previousBills.forEach(bill => {
+      let transaction: Transaction = {
+        TransactionId: 0,
+        BillDate: dateUtils.parseDateString(bill.BillDate.toLocaleDateString()),
+        AmountContributed: "0",
+        CustomAmount: "-1",
+        DefaultAmount: "0",
+        SurplusDeficit: "0",
+        TransactionSourceId: that.selectedExpenseId,
+        TransactionTypeId: Constants.TransactionTypes.Expense,
+        UserId: that.userId,
+        ExpenseAccountName: "",
+        ExpenseName: ""
+      };
+
+      transactionList.push(transaction);
+    });
+
+
+    this.transactionService.addPreviousBillsForUser(transactionList)
+      .subscribe(function () {
+        that.router.navigateByUrl('/expense-accounts');
+      },
+      error => this.errorMessage = <any>error);
   }
 
 }
@@ -178,13 +241,13 @@ export class CreateExpenseDialog {
 
   newExpenseName: string;
 
-  constructor(public dialogRef: MdDialogRef<CreateExpenseDialog>) {}
+  constructor(public dialogRef: MdDialogRef<CreateExpenseDialog>) { }
 
-  closeDialog(){
+  closeDialog() {
     this.dialogRef.close();
   }
 
-  addExpenseName(){
+  addExpenseName() {
     this.dialogRef.close(this.newExpenseName);
   }
 }

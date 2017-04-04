@@ -7,10 +7,12 @@ import { Observable } from 'rxjs/Observable';
 
 import { Http, Response } from '@angular/http';
 
+import { Constants } from '../common/constants';
+
 @Injectable()
 export class UtilityService {
 
-  private frequencyTypesUrl = "http://localhost:55794/api/frequencytypes/getfrequencytypes";
+  private frequencyTypesUrl = Constants.ApiLocation + "/api/frequencytypes/getfrequencytypes";
 
   constructor(private http: Http) { }
 

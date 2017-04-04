@@ -27,7 +27,7 @@
           <Key>
             <PropertyRef Name="ExpenseId" />
           </Key>
-          <Property Name="ExpenseId" Type="int" Nullable="false" StoreGeneratedPattern="None" />
+          <Property Name="ExpenseId" Type="int" Nullable="false" />
           <Property Name="ExpenseAccountId" Type="int" Nullable="false" />
           <Property Name="ExpenseName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
@@ -91,6 +91,7 @@
           <Property Name="AmountContributed" Type="money" />
           <Property Name="SurplusDeficit" Type="money" />
           <Property Name="WhenCreated" Type="datetime" Nullable="false" />
+          <Property Name="UserId" Type="int" />
         </EntityType>
         <EntityType Name="TransactionTypes">
           <Key>
@@ -386,6 +387,7 @@
           <Property Name="SurplusDeficit" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="WhenCreated" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="TransactionPeriod" Relationship="Self.Transactions_FK1" FromRole="Transactions" ToRole="TransactionPeriods" />
+          <Property Name="UserId" Type="Int32" />
         </EntityType>
         <EntityType Name="TransactionType">
           <Key>
@@ -675,6 +677,7 @@
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="SaveYourBaconModel.Transaction">
               <MappingFragment StoreEntitySet="Transactions">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
                 <ScalarProperty Name="TransactionTypeId" ColumnName="TransactionTypeId" />
                 <ScalarProperty Name="DefaultAmount" ColumnName="DefaultAmount" />

@@ -15,7 +15,7 @@ declare var $:any;
 export class ExpenseOverviewComponent implements OnInit {
 
   errorMessage: string;
-  expenses: Expense[];
+  expenses: Expense[] = [];
   mode = 'Observable';
   userId = 1000;
 

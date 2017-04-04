@@ -1,7 +1,7 @@
 <section class="IncomeOverview bottom-spacing">
   <span class="widget--header">Income Overview</span>
-  <div class="boxed-container">
-    <p-dataTable [value]="income" sortField="IncomeDate">
+  <div class="boxed-container datagrid__container">
+    <p-dataTable [value]="income" sortField="IncomeDate" >
         <p-column field="IncomeSourceType.IncomeSourceName" header="Income Source" sortable="true"></p-column>
         <p-column field="IncomeDate" header="Pay Date" sortable="true">
             <template let-col let-car="rowData" pTemplate="body">

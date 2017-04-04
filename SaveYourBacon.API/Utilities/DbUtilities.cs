@@ -12,7 +12,8 @@ namespace SaveYourBacon.API.Utilities
     {
         public DataSet GetDataSetFromSql(string SQL)
         {
-            SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SYBDevConnectionString"].ConnectionString);
+            //SqlConnection conn = new SqlConnection(ConfigurationManager.ConnectionStrings["SYBDevConnectionString"].ConnectionString);
+            SqlConnection conn = new SqlConnection(Helpers.GetRDSConnectionString());
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand cmd = conn.CreateCommand();
             cmd.CommandText = SQL;

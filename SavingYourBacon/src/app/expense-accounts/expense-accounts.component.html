@@ -4,9 +4,9 @@
     <button md-raised-button routerLink="/create-expense">Create Expense</button>
   </div>
   <p-dataTable [value]="expenses" [editable]="true" rowGroupMode="subheader" groupField="ExpenseAccount.ExpenseAccountName" expandableRowGroups="false"
-        [sortableRowGroup]="false" class="margin-top-20" (onEditComplete)="handleExpenseEdit($event)">
+        [sortableRowGroup]="false" sortField="ExpenseAccount.ExpenseAccountName" class="margin-top-20" (onEditComplete)="handleExpenseEdit($event)">
       <template pTemplate="rowgroupheader" let-rowData>{{rowData['ExpenseAccount'].ExpenseAccountName}}</template>
-      <p-column field="ExpenseName" header="Expense"></p-column>
+      <p-column field="ExpenseName" header="Expense" sortable="true"></p-column>
       <p-column field="BillAmount" header="Bill Amount" sortable="true" [editable]="true">
           <template let-col let-expense="rowData" pTemplate="body">
               {{expense[col.field] ? (expense[col.field] | currency:'USD':true) : ""}}

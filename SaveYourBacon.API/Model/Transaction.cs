@@ -24,6 +24,7 @@ namespace SaveYourBacon.API.Model
         public Nullable<decimal> AmountContributed { get; set; }
         public Nullable<decimal> SurplusDeficit { get; set; }
         public System.DateTime WhenCreated { get; set; }
+        public Nullable<int> UserId { get; set; }
     
         public virtual TransactionPeriod TransactionPeriod { get; set; }
     }

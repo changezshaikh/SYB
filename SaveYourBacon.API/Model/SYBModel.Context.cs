@@ -16,7 +16,7 @@ namespace SaveYourBacon.API.Model
     public partial class SaveYourBaconEntities : DbContext
     {
         public SaveYourBaconEntities()
-            : base("name=SaveYourBaconEntities")
+            : base("name=SaveYourBaconEntitiesProd")
         {
         }
     

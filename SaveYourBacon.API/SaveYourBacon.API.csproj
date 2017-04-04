@@ -116,6 +116,7 @@
     <Compile Include="Model\AmountType.cs">
       <DependentUpon>SYBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\Constants.cs" />
     <Compile Include="Model\Expense.cs">
       <DependentUpon>SYBModel.tt</DependentUpon>
     </Compile>
@@ -153,6 +154,7 @@
     <Compile Include="Model\TransactionPeriod.cs">
       <DependentUpon>SYBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\TransactionRecord.cs" />
     <Compile Include="Model\TransactionType.cs">
       <DependentUpon>SYBModel.tt</DependentUpon>
     </Compile>
@@ -161,6 +163,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\DbUtilities.cs" />
+    <Compile Include="Utilities\Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -171,6 +174,8 @@
     <Content Include="Model\SYBModel.edmx.diagram">
       <DependentUpon>SYBModel.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

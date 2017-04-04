@@ -5,6 +5,7 @@ import { Income } from '../data-objects/income';
 import { IncomeService } from '../services/income-service.service';
 
 declare var $:any;
+declare var pleaseWait:any;
 
 @Component({
   selector: 'income-overview',
@@ -15,7 +16,7 @@ declare var $:any;
 export class IncomeOverviewComponent implements OnInit {
 
   errorMessage: string;
-  income: Income[];
+  income: Income[] = [];
   mode = 'Observable';
   userId = 1000;
 
@@ -24,7 +25,12 @@ export class IncomeOverviewComponent implements OnInit {
   }
 
   ngOnInit() {
-      this.getIncome();
+    // var loading_screen = pleaseWait({
+    //   logo: "assets/images/pathgather.png",
+    //   backgroundColor: '#27ae60',
+    //   loadingHtml: "<div class='sk-spinner sk-spinner-wave'><div class='sk-rect1'></div><div class='sk-rect2'></div><div class='sk-rect3'></div><div class='sk-rect4'></div><div class='sk-rect5'></div></div>"
+    // });
+    this.getIncome();
   }
 
   getIncome(){

@@ -4,9 +4,11 @@ import { ExpenseService } from '../services/expense.service';
 import { ExpenseType } from '../data-objects/expenseType';
 import { Expense } from '../data-objects/expense';
 import { ExpenseRecord } from '../data-objects/expenseRecord';
-import {MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar} from '@angular/material';
+import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
+import { ConfirmDialogComponent } from '../common/confirm-dialog.component';
+import { ConfirmDialog as ConfirmDialogModel } from '../data-objects/confirmDialog';
 
-declare let _:any;
+declare let _: any;
 
 @Component({
   selector: 'expense-accounts',
@@ -23,54 +25,74 @@ export class ExpenseAccountsComponent implements OnInit {
   errorMessage: string;
   expenseAccounts: ExpenseType[];
 
-  constructor(public dialog: MdDialog, private expenseService:ExpenseService, public snackBar: MdSnackBar) { }
+  constructor(public dialog: MdDialog, private expenseService: ExpenseService, public snackBar: MdSnackBar) { }
 
   ngOnInit() {
     this.getExpenseTypesForUser();
     this.getExpenses();
   }
 
-  getExpenseTypesForUser(){
-      this.expenseService.getExpenseTypes(this.userId)
-                        .subscribe(data => this.expenseAccounts = data,
-                                    error =>  this.errorMessage = <any>error);
+  getExpenseTypesForUser() {
+    this.expenseService.getExpenseTypes(this.userId)
+      .subscribe(data => this.expenseAccounts = data,
+      error => this.errorMessage = <any>error);
   }
 
-  getExpenses(){
-      this.expenseService.getExpense(this.userId)
-                        .subscribe(data => this.expenses = data,
-                                    error =>  this.errorMessage = <any>error);
+  getExpenses() {
+    this.expenseService.getExpense(this.userId)
+      .subscribe(data => this.expenses = data,
+      error => this.errorMessage = <any>error);
   }
 
-  handleExpenseEdit(event){
+  handleExpenseEdit(event) {
 
     let that = this;
 
     this.expenseService.updateExpense(event.data)
-                        .subscribe(data => {
-                                      that.snackBar.open('Expense record updated successfully!', '', { duration: 1000 });
-                                    },
-                                    error =>  this.errorMessage = <any>error);
+      .subscribe(data => {
+        that.snackBar.open('Expense record updated successfully!', '', { duration: 1000 });
+      },
+      error => this.errorMessage = <any>error);
   }
 
-  deleteExpense(expense: ExpenseRecord){
+  confirmDeleteAccountDialog() {
+
     let that = this;
-    
-    this.expenseService.deleteExpense(expense.ExpenseId)
-                      .subscribe(data => { 
-                                            _.remove(this.expenses, function(currentObject) {
-                                                return currentObject.ExpenseId === expense.ExpenseId;
-                                            });
-                                            that.snackBar.open('Expense record deleted successfully!', '', { duration: 1000 }); 
-                                         },
-                                 error => this.errorMessage = <any>error);
+
+  }
+
+  deleteExpense(expense: ExpenseRecord) {
+    let that = this;
+    let model: ConfirmDialogModel = { Title: "Are you sure?", Body: "" };
+    let dialogRef = this.dialog.open(ConfirmDialogComponent, { data: model });
+
+    dialogRef.afterClosed()
+      .subscribe(data => {
+        if (data) {
+
+          this.expenseService.deleteExpense(expense.ExpenseId)
+            .subscribe(data => {
+              _.remove(this.expenses, function (currentObject) {
+                return currentObject.ExpenseId === expense.ExpenseId;
+              });
+              that.snackBar.open('Expense record deleted successfully!', '', { duration: 1000 });
+            },
+            error => this.errorMessage = <any>error);
+
+
+        } else {
+          return false;
+        }
+
+      }, error => this.errorMessage = <any>error
+      );
   }
 
   createExpenseAccount() {
-    let dialogRef = this.dialog.open(CreateExpenseAccountDialog, { data: this.expenseAccounts});
+    let dialogRef = this.dialog.open(CreateExpenseAccountDialog, { data: this.expenseAccounts });
     dialogRef.afterClosed().subscribe(newExpenseAccount => {
 
-      if(!newExpenseAccount || !newExpenseAccount.length)
+      if (!newExpenseAccount || !newExpenseAccount.length)
         return;
 
       this.newExpenseAccountName = newExpenseAccount;
@@ -83,11 +105,11 @@ export class ExpenseAccountsComponent implements OnInit {
       let that = this;
 
       this.expenseService.addExpenseAccountForUser(expenseAccountType)
-                          .subscribe(function(){
-                                      that.expenseAccounts.push({ExpenseAccountId: 1, ExpenseAccountName: expenseAccountType.expenseAccountName});
-                                      that.snackBar.open('Expense account added successfully!', '', { duration: 5000 });                                
-                                    },
-                                      error =>  this.errorMessage = <any>error);
+        .subscribe(function () {
+          that.expenseAccounts.push({ ExpenseAccountId: 1, ExpenseAccountName: expenseAccountType.expenseAccountName });
+          that.snackBar.open('Expense account added successfully!', '', { duration: 5000 });
+        },
+        error => this.errorMessage = <any>error);
     });
   }
 
@@ -102,17 +124,17 @@ export class CreateExpenseAccountDialog {
   newExpenseAccount: string;
   expenseAccounts = [];
 
-  constructor(public dialogRef: MdDialogRef<CreateExpenseAccountDialog>) {}
+  constructor(public dialogRef: MdDialogRef<CreateExpenseAccountDialog>) { }
 
   ngOnInit() {
     this.expenseAccounts = this.dialogRef.config.data;
   }
 
-  closeDialog(){
+  closeDialog() {
     this.dialogRef.close();
   }
 
-  addExpenseAccount(){
+  addExpenseAccount() {
     this.dialogRef.close(this.newExpenseAccount);
   }
 }
