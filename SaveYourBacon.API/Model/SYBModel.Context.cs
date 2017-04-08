@@ -35,5 +35,7 @@ namespace SaveYourBacon.API.Model
         public virtual DbSet<TransactionType> TransactionTypes { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<FrequencyType> FrequencyTypes { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<NotificationStatu> NotificationStatus { get; set; }
     }
 }

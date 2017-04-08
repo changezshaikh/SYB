@@ -22,6 +22,7 @@ namespace SaveYourBacon.API.Model
             this.Incomes = new HashSet<Income>();
             this.IncomeSourceTypes = new HashSet<IncomeSourceType>();
             this.TransactionPeriods = new HashSet<TransactionPeriod>();
+            this.Notifications = new HashSet<Notification>();
         }
     
         public int UserId { get; set; }
@@ -47,5 +48,7 @@ namespace SaveYourBacon.API.Model
         public virtual ICollection<IncomeSourceType> IncomeSourceTypes { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TransactionPeriod> TransactionPeriods { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Notification> Notifications { get; set; }
     }
 }

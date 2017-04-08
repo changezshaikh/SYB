@@ -17,7 +17,7 @@ declare let _: any;
 export class IncomesComponent implements OnInit {
 
   errorMessage: string;
-  income: Income[];
+  income: Income[] = [];
   mode = 'Observable';
   userId = 1000;
 

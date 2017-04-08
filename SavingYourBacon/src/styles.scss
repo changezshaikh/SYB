@@ -1,9 +1,15 @@
-@import '~@angular/material/core/theming/prebuilt/deeppurple-amber.css';
+@import '~@angular/material/core/theming/prebuilt/indigo-pink.css';
 
 /* You can add global styles to this file, and also import other style files */
 
 body{
     padding-top: 70px;
+    font-family: 'Roboto', sans-serif;
+    background-color: #eee;
+}
+
+section{
+    position: relative;
 }
 
 body > .inner {
@@ -22,9 +28,9 @@ body.pg-loaded > .inner {
 
 .datagrid__container{
     border: none;
-    height: 164px;
+    min-height: 250px;
     padding: 0;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
     margin: 20px 0;
 }
 
@@ -84,6 +90,19 @@ section.bottom-spacing{
     border-bottom: solid 1px black;
 }
 
+.ui-widget-content {
+    border: none;
+    border-bottom: solid 1px;
+}
+
+.ui-widget-content {
+    border: none;
+}
+
+.ui-datatable .ui-datatable-data tr.ui-datatable-even {
+    background-color: #ffffff;
+}
+
 .modal__body{
     display: flex;
     justify-content: space-between;
@@ -92,5 +111,17 @@ section.bottom-spacing{
 
 .modal--list{
     margin: 0 20px;
+}
+
+.loader__container{
+    position: absolute;
+    background-color: #e5e5e5;
+    opacity: 0.8;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 

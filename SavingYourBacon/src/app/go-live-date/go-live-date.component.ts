@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CalendarModule} from 'primeng/primeng';
+import { User } from '../data-objects/user';
 
 @Component({
   selector: 'go-live-date',
@@ -8,11 +9,14 @@ import {CalendarModule} from 'primeng/primeng';
 })
 export class GoLiveDateComponent implements OnInit {
 
-  goLiveDate: string;
+  goLiveDate: Date;
+  currentUser: User;
 
   constructor() { }
 
   ngOnInit() {
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.goLiveDate = new Date(this.currentUser.GoLiveDate);
   }
 
 }

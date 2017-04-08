@@ -1,4 +1,7 @@
-<section class="Incomes">
+<section class="Incomes bottom-spacing">
+  <div class="loader__container" *ngIf="!income.length">
+      <md-spinner></md-spinner>
+  </div>
   <div class="margin-bottom-20">
     <button md-raised-button routerLink="/create-income">Create Income</button>
   </div>

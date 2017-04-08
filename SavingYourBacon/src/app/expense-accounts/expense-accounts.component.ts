@@ -18,12 +18,12 @@ declare let _: any;
 })
 export class ExpenseAccountsComponent implements OnInit {
 
-  expenses: Expense[];
+  expenses: Expense[] = [];
   mode = 'Observable';
   newExpenseAccountName: string;
   userId = 1000;
   errorMessage: string;
-  expenseAccounts: ExpenseType[];
+  expenseAccounts: ExpenseType[] = [];
 
   constructor(public dialog: MdDialog, private expenseService: ExpenseService, public snackBar: MdSnackBar) { }
 

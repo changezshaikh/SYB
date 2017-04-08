@@ -1,7 +1,10 @@
 <section class="ExpenseOverview bottom-spacing">
-  <span class="widget--header">Expense Account Overview</span>
+  <div class="loader__container" *ngIf="!expenses.length">
+      <md-spinner></md-spinner>
+  </div>
   <div class="boxed-container datagrid__container">
-    <p-dataTable [value]="expenses">
+    <p-dataTable [value]="expenses" [rows]="4" [paginator]="expenses.length>4" [pageLinks]="3">
+        <p-header>Expense Overview</p-header>
         <p-column field="ExpenseName" header="Expense Account" sortable="true"></p-column>
         <p-column field="BillAmount" header="Total Amount" sortable="true">
             <template let-col let-car="rowData" pTemplate="body">

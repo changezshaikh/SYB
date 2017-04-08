@@ -25,6 +25,11 @@
         <AssociationConnector Association="SaveYourBaconModel.TransactionPeriods_FK" ManuallyRouted="false" />
         <AssociationConnector Association="SaveYourBaconModel.Transactions_FK1" ManuallyRouted="false" />
         <EntityTypeShape EntityType="SaveYourBaconModel.FrequencyType" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.Notification" Width="1.5" PointX="3" PointY="18.625" />
+        <AssociationConnector Association="SaveYourBaconModel.Notifications_FK1" />
+        <EntityTypeShape EntityType="SaveYourBaconModel.NotificationStatu" Width="1.5" PointX="7.375" PointY="0.875" />
+        <AssociationConnector Association="SaveYourBaconModel.Notifications_FK2" />
+        <AssociationConnector Association="SaveYourBaconModel.Notifications_FK21" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

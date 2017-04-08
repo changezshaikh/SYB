@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
  
 import { AuthenticationService } from '../services/authentication.service';
+import { AuthenticationModel } from '../data-objects/authenticationModel';
 
 @Component({
-  selector: 'app-login',
+  selector: 'login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -20,29 +21,37 @@ export class LoginComponent implements OnInit {
  
     ngOnInit() {
         // reset login status
-        //this.authenticationService.logout();
+        this.authenticationService.logout();
+    }
+
+    onLogin(credentials) {
+      this.authenticationService.login(credentials);
     }
  
     login() {
         this.loading = true;
-        if(this.model.username.toLowerCase() === "sybadmin" && this.model.password.toLowerCase() === "syb1234" ){
-          this.router.navigate(['/dashboard']);
-        } else{
-          // login failed
-          this.error = 'Username or password is incorrect';
-          this.loading = false;
-        }
-        // this.authenticationService.login(this.model.username, this.model.password)
-        //     .subscribe(result => {
-        //         if (result === true) {
-        //             // login successful
-        //             this.router.navigate(['/']);
-        //         } else {
-        //             // login failed
-        //             this.error = 'Username or password is incorrect';
-        //             this.loading = false;
-        //         }
-        //     });
+        let that = this;
+        let loginModel: AuthenticationModel = {
+          Username: this.model.username.toLowerCase(),
+          Password: this.model.password
+        };
+
+        this.authenticationService.login(loginModel)
+            .subscribe(result => {
+                if (result === true) {
+                    // login successful
+                    this.router.navigate(['/']);
+                } else {
+                    // login failed
+                    this.error = 'Username or password is incorrect';
+                    this.loading = false;
+                }
+            },
+            error => {
+              this.error = 'Username or password is incorrect';
+              this.loading = false;
+            },
+            () => {that.loading = false});
     }
 
 }

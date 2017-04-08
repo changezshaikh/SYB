@@ -1,7 +1,10 @@
 <section class="ImportantDates bottom-spacing">
-  <span class="widget--header">Important Dates</span>
+  <div class="loader__container" *ngIf="!importantDates.length">
+    <md-spinner></md-spinner>
+  </div>
   <div class="boxed-container datagrid__container">
-    <p-dataTable [value]="importantDates">
+    <p-dataTable [value]="importantDates" [rows]="4" [paginator]="importantDates.length>4" [pageLinks]="3">
+        <p-header>Important Dates</p-header>
         <p-column field="ExpenseAccount.ExpenseAccountName" header="Expense Account" sortable="true"></p-column>
         <p-column field="ExpenseName" header="Expense" sortable="true"></p-column>
         <p-column field="BillDate" header="Due On" sortable="true">

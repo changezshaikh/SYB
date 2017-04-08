@@ -37,8 +37,8 @@ namespace SaveYourBacon.API.Controllers
             {
                 var tr = new TransactionRecord(transaction);
                 var expense = db.Expenses.Where(ex => ex.ExpenseId == tr.TransactionSourceId).FirstOrDefault();
-                tr.ExpenseName = expense.ExpenseName;
-                tr.ExpenseAccountName = expense.ExpenseAccount.ExpenseAccountName;
+                tr.ExpenseName = expense != null ? expense.ExpenseName : string.Empty;
+                tr.ExpenseAccountName = expense != null ? expense.ExpenseAccount.ExpenseAccountName : "Expense Account Not Found";
 
                 transactionRecordList.Add(tr);
             }

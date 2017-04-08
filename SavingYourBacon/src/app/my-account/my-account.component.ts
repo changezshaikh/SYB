@@ -10,7 +10,7 @@ import { Transaction } from '../data-objects/transaction';
 })
 export class MyAccountComponent implements OnInit {
 
-  transactions: Transaction[];
+  transactions: Transaction[] = [];
   mode = 'Observable';
   userId = 1000;
   errorMessage: string;

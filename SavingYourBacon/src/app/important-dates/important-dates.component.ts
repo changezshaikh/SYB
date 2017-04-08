@@ -15,7 +15,7 @@ declare var $:any;
 export class ImportantDatesComponent implements OnInit {
 
   errorMessage: string;
-  importantDates: Expense[];
+  importantDates: Expense[] = [];
   mode = 'Observable';
   userId = 1000;
 
@@ -29,18 +29,6 @@ export class ImportantDatesComponent implements OnInit {
       this.expenseService.getImportantExpenseDates(this.userId)
                         .subscribe(data => this.importantDates = data,
                                     error =>  this.errorMessage = <any>error);
-  }
-
-  ngAfterViewInit(): void{
-      $(document).ready(function(){
-          
-           $("#importantDatesGrid").DataTable({
-              "paging":   false,
-              "info":     false
-           });
-    
-        });
-     
   }
 
 }
