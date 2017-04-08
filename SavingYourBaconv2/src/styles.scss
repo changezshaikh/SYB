@@ -1,0 +1,131 @@
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* You can add global styles to this file, and also import other style files */
+
+body{
+    padding-top: 70px;
+    font-family: 'Roboto', sans-serif;
+    background-color: #eee;
+}
+
+section{
+    position: relative;
+}
+
+body > .inner {
+  display: none;
+}
+
+body.pg-loaded > .inner {
+  display: block;
+}
+
+.boxed-container{
+    // border: solid 1px black;
+    min-height: 150px;
+    padding: 20px;
+}
+
+.datagrid__container{
+    border: none;
+    min-height: 250px;
+    padding: 0;
+    /*overflow-y: auto;*/
+    margin: 20px 0;
+}
+
+.center{
+    text-align: center;
+}
+
+.bold-text{
+    font-weight: bold;
+}
+
+section.bottom-spacing{
+    margin-bottom: 20px;
+}
+
+.margin-top-20{
+    margin-top: 20px;
+}
+
+.margin-bottom-20{
+    margin-bottom: 20px;
+}
+
+.margin-right-20{
+    margin-right: 20px;
+}
+
+.radio-group-vertical{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .radio-button{
+        margin: 5px;
+    }
+}
+
+.full-width-form-control{
+    width: 100%;
+}
+
+.mat-input-placeholder, .mat-radio-label-content, .form-group label{
+    font-weight: 300 !important;
+}
+
+.mat-chip{
+    outline: none;
+}
+
+.ui-datatable a {
+   text-decoration: none !important;
+}
+
+//Grid styles
+.datagrid{
+    width: 99%;
+    height: 200px;
+}
+
+.datagrid--row{
+    border-bottom: solid 1px black;
+}
+
+.ui-widget-content {
+    border: none;
+    border-bottom: solid 1px;
+}
+
+.ui-widget-content {
+    border: none;
+}
+
+.ui-datatable .ui-datatable-data tr.ui-datatable-even {
+    background-color: #ffffff;
+}
+
+.modal__body{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal--list{
+    margin: 0 20px;
+}
+
+.loader__container{
+    position: absolute;
+    background-color: #e5e5e5;
+    opacity: 0.8;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+

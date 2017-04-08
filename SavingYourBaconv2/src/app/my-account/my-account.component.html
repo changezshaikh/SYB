@@ -1,0 +1,41 @@
+<section class="MyAccount bottom-spacing">
+    <md-card>
+    <div class="loader__container" *ngIf="!transactions.length">
+        <md-spinner></md-spinner>
+    </div>
+        <div class="col-xs-12">
+            <div class="col-md-6"></div>
+            <div class="col-md-6"></div>
+        </div>
+        <p-dataTable [value]="transactions" [editable]="false" rowGroupMode="subheader" groupField="ExpenseAccountName" expandableRowGroups="false"
+            [sortableRowGroup]="true" [responsive]="true" sortField="ExpenseAccountName" class="margin-top-20">
+            <template pTemplate="rowgroupheader" let-rowData>{{rowData['ExpenseAccountName']}}</template>
+            <p-column field="ExpenseName" header="Expense" sortable="true"></p-column>
+            <p-column field="CustomAmount" header="Bill Amount" sortable="true">
+                <template let-col let-expense="rowData" pTemplate="body">
+                    {{expense[col.field] ? (expense[col.field] == '-1' ? (expense['DefaultAmount'] | currency:'USD':true) : (expense[col.field]
+                    | currency:'USD':true)) : ""}}
+                </template>
+            </p-column>
+            <p-column field="BillDate" header="Bill Date" sortable="true">
+                <template let-col let-expense="rowData" pTemplate="body">
+                    {{expense[col.field] | date: 'dd/MM/y'}}
+                </template>
+            </p-column>
+            <p-column field="AmountContributed" header="Amount Contribution" sortable="true">
+                <template let-col let-expense="rowData" pTemplate="body">
+                    {{expense[col.field] | currency:'USD':true}}
+                </template>
+            </p-column>
+            <p-column field="SurplusDeficit" header="Surplus/Deficit" sortable="true">
+                <template let-col let-expense="rowData" pTemplate="body">
+                    {{expense[col.field] | currency:'USD':true}}
+                </template>
+            </p-column>
+            <template pTemplate="rowgroupfooter" let-expense>
+                <td colspan="3" style="text-align:right">Total Amount</td>
+                <td>{{calculateGroupTotal(expense['ExpenseAccountName']) | currency:'USD':true }}</td>
+            </template>
+        </p-dataTable>
+    </md-card>
+</section>

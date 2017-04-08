@@ -1,0 +1,24 @@
+<section class="Notifications">
+  <div class="loader__container" *ngIf="!notifications.length">
+      <md-spinner></md-spinner>
+  </div>
+  <div class="boxed-container datagrid__container">
+    <p-dataTable [value]="notifications" [rows]="4" [paginator]="notifications.length>4" [pageLinks]="3">
+        <p-header>Notifications</p-header>
+        <p-column field="NotificationDate" header="Date" sortable="true">
+            <template let-col let-notification="rowData" pTemplate="body">
+                {{notification[col.field] | date: 'dd/MM/y'}}
+            </template>
+        </p-column>
+        <p-column field="NotificationFrom" header="From" sortable="true"></p-column>
+        <p-column field="Subject" header="Subject" sortable="true"></p-column>
+        <p-column>
+          <template let-notification="rowData" pTemplate="body">
+            <div class="button-row">
+              <button md-mini-fab (click)="viewNotification(notification)"><md-icon>pageview</md-icon></button>
+            </div>
+          </template>
+        </p-column>
+    </p-dataTable>
+  </div>
+</section>

@@ -1,0 +1,15 @@
+.GoLiveDate{
+    .go-live__container{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 30px;
+        border: none;
+        background-color: indianred;
+        color: #fff;
+
+        &.active{
+            background-color: mediumseagreen;
+        }
+    }
+}

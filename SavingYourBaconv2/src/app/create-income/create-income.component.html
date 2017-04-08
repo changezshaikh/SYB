@@ -1,0 +1,65 @@
+<section class="CreateIncome">
+  <span class="widget--header">Create Income</span>
+  <div class="boxed-container">
+    <form>
+      <div class="row">
+        
+        <div class="col-md-12">
+          <div class="form-group">
+            <md-select placeholder="Create Income Name" [(ngModel)]="selectedIncomeSourceId" name="incomeName" class="full-width-form-control">
+              <md-option *ngFor="let income of incomes" [value]="income.IncomeSourceType.IncomeSourceTypeId">
+                {{income.IncomeSourceType.IncomeSourceName}}
+              </md-option>
+              <md-option value="-1" (click)="openDialog()">
+                Add New
+              </md-option>
+            </md-select>
+            <md-chip-list class="mat-chip-list-stacked chip--list" *ngIf="newIncomeName">
+              <md-chip selected="true" color="primary">
+                {{newIncomeName}}
+              </md-chip>
+            </md-chip-list>
+          </div>
+          <div class="form-group">
+            <md-input-container class="full-width-form-control">
+              <input mdInput placeholder="Income Amount" [(ngModel)] = "incomeAmount" name="incomeAmount">
+            </md-input-container>
+          </div>
+          <div class="form-group">
+            <label for="expenseType">Type of Income</label>
+            <md-radio-group [(ngModel)]="selectedIncomeType" name="incomeTypes" class="radio-group-vertical">
+              <md-radio-button *ngFor="let option of incomeTypeOptions" [value]="option.id" class="radio-button">
+                {{option.value}}
+              </md-radio-button>
+            </md-radio-group>
+            <md-select placeholder="Variable/Fixed" [(ngModel)]="recurringType" name="recurringType" class="subtype--dropdown" *ngIf="selectedIncomeType == -1">
+              <md-option *ngFor="let type of recurringTypes" [value]="type.id">
+                {{type.value}}
+              </md-option>
+            </md-select>
+          </div>
+          <div class="form-group">
+            <p-calendar [(ngModel)]="incomeDate" dateFormat="dd/mm/yy" name="incomeDate" placeholder="Income Date"></p-calendar>
+          </div>
+          <div class="form-group">
+            <md-select placeholder="Frequency" [(ngModel)]="selectedFrequencyType" name="frequencyType" class="full-width-form-control">
+              <md-option *ngFor="let type of frequencyTypes" [value]="type.FrequencyName">
+                {{type.FrequencyName}}
+              </md-option>
+            </md-select>
+          </div>
+          <div class="form-group" *ngIf="expenseTypes.length">
+            <label for="expenseTypes">Assign to expense</label>
+            <p-listbox [options]="expenseTypes" [(ngModel)]="selectedExpenseTypes" multiple="multiple" checkbox="checkbox" filter="filter" name="linkedExpenses">
+            </p-listbox>
+          </div>
+        </div>
+        <div class="col-md-12 button__container">
+          <button md-button routerLink="/incomes">Cancel</button>
+          <button md-raised-button (click)="saveIncomeRecord()">{{isInEditMode? 'Save':'Add'}}</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</section>

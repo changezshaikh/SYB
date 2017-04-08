@@ -1,0 +1,8 @@
+<h2 md-dialog-title>{{model.Title}}</h2>
+<md-dialog-content>
+    {{model.Body}}
+</md-dialog-content>
+<md-dialog-actions>
+    <button md-button md-dialog-close>No</button>
+    <button md-raised-button (click)="confirmAction()">Yes</button>
+</md-dialog-actions>
