@@ -14,6 +14,7 @@ import dateUtils from '../utilities/dateUtilities';
 import { ConfirmDialogComponent } from '../common/confirm-dialog.component';
 import { ConfirmDialog as ConfirmDialogModel } from '../data-objects/confirmDialog';
 import { Constants } from '../common/constants';
+import { User } from '../data-objects/user';
 
 declare let _: any;
 
@@ -25,6 +26,7 @@ declare let _: any;
 })
 export class CreateExpenseComponent implements OnInit {
 
+  currentUser: User;
   errorMessage: string;
   expenseTypes: ExpenseType[];
   frequencyTypes: SelectOption[];
@@ -36,13 +38,13 @@ export class CreateExpenseComponent implements OnInit {
   billDate: Date;
   selectedExpenseType: number;
   mode = 'Observable';
-  userId = 1000;
   recurringType: number;
   expenseAccountForNames = {
   };
   expenseTypeOptions = [];
   recurringTypes = [];
   isInEditMode = false;
+  loading: boolean = true;
 
   newExpenseName: string;
   selectedExpenseId: number = 0;
@@ -59,10 +61,12 @@ export class CreateExpenseComponent implements OnInit {
 
   ngOnInit() {
 
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.expenseTypeOptions = recordUtils.getIncomeTypeOptions();
     this.recurringTypes = recordUtils.getRecurringTypes();
 
     this.getExpenseTypesForUser();
+    // this.getExistingExpenseTypesForUser();
     this.getFrequencyTypes();
 
     // subscribe to router event
@@ -81,12 +85,15 @@ export class CreateExpenseComponent implements OnInit {
     });
   }
 
+  ngAfterViewInit(){
+    // this.updateExpenseNames(this.selectedExpenseAccount);
+  }
+
   populateFormForEdit(expense) {
     this.isInEditMode = true;
     this.selectedExpenseId = expense.ExpenseId;
     this.selectedExpenseType = expense.ExpenseTypeId;
-    this.selectedExpenseAccount = expense.ExpenseAccount.ExpenseAccountId;
-    this.updateExpenseNames(this.selectedExpenseAccount);
+    this.selectedExpenseAccount = expense.ExpenseAccount.ExpenseAccountId;    
     this.selectedExpenseName = expense.ExpenseName;
     this.billAmount = expense.BillAmount;
     this.billDate = new Date(expense.BillDate);
@@ -108,14 +115,15 @@ export class CreateExpenseComponent implements OnInit {
   }
 
   getExpenseTypesForUser() {
-    this.expenseService.getExpenseTypes(this.userId)
+    this.expenseService.getExpenseTypes(this.currentUser.UserId)
       .subscribe(data => this.expenseTypes = data,
-      error => this.errorMessage = <any>error);
+      error => this.errorMessage = <any>error,
+      () => {this.loading = false;});
   }
 
   getExistingExpenseTypesForUser() {
     let that = this;
-    this.expenseService.getExpenseTypes(this.userId)
+    this.expenseService.getExpenseTypes(this.currentUser.UserId)
       .subscribe(data => {
         that.expenseTypes = data;
         that.updateExpenseNames(this.expenseTypes[0]);
@@ -168,14 +176,15 @@ export class CreateExpenseComponent implements OnInit {
       ExpenseId: this.selectedExpenseId,
       ExpenseAccountId: this.selectedExpenseAccount,
       ExpenseName: this.selectedExpenseName == "-1" ? this.newExpenseName : this.selectedExpenseName,
-      UserId: this.userId.toString(),
-      Frequency: this.selectedFrequencyType,
+      UserId: this.currentUser.UserId.toString(),
+      Frequency: this.selectedExpenseType == -1 ? this.selectedFrequencyType : "",
       BillAmount: this.billAmount,
-      BillDate: this.billDate !== null ? dateUtils.parseDateString(this.billDate.toLocaleDateString()) : "",
+      BillDate: this.billDate !== null ? this.billDate.toLocaleDateString('en-US') : "",
       ExpenseAmountTypeId: this.selectedExpenseType == -1 ? this.recurringType.toString() : this.selectedExpenseType.toString()
     };
 
     let that = this;
+    this.loading = !this.loading;
 
     if (this.isInEditMode) {
       this.expenseService.updateExpense(expenseRecord)
@@ -190,7 +199,8 @@ export class CreateExpenseComponent implements OnInit {
           that.selectedExpenseId = data.ExpenseId;
           that.confirmPreviousBillsDialog();
         },
-        error => this.errorMessage = <any>error);
+        error => this.errorMessage = <any>error,
+        () => {that.loading = !that.loading;});
 
     }
   }
@@ -208,16 +218,18 @@ export class CreateExpenseComponent implements OnInit {
     this.previousBills.forEach(bill => {
       let transaction: Transaction = {
         TransactionId: 0,
-        BillDate: dateUtils.parseDateString(bill.BillDate.toLocaleDateString()),
+        BillDate: bill.BillDate.toLocaleDateString('en-US'),
         AmountContributed: "0",
-        CustomAmount: "-1",
+        CustomAmount: bill.BillAmount,
         DefaultAmount: "0",
         SurplusDeficit: "0",
         TransactionSourceId: that.selectedExpenseId,
         TransactionTypeId: Constants.TransactionTypes.Expense,
-        UserId: that.userId,
+        UserId: that.currentUser.UserId,
         ExpenseAccountName: "",
-        ExpenseName: ""
+        ExpenseName: "",
+        IncomeSourceName: "",
+        Frequency: that.selectedFrequencyType
       };
 
       transactionList.push(transaction);

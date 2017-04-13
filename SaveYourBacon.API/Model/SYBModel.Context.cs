@@ -13,10 +13,10 @@ namespace SaveYourBacon.API.Model
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class SaveYourBaconEntities : DbContext
+    public partial class SaveYourBaconEntities2 : DbContext
     {
-        public SaveYourBaconEntities()
-            : base("name=SaveYourBaconEntitiesProd")
+        public SaveYourBaconEntities2()
+            : base("name=SaveYourBaconEntities2")
         {
         }
     
@@ -28,14 +28,14 @@ namespace SaveYourBacon.API.Model
         public virtual DbSet<AmountType> AmountTypes { get; set; }
         public virtual DbSet<ExpenseAccount> ExpenseAccounts { get; set; }
         public virtual DbSet<Expense> Expenses { get; set; }
+        public virtual DbSet<FrequencyType> FrequencyTypes { get; set; }
         public virtual DbSet<Income> Incomes { get; set; }
         public virtual DbSet<IncomeSourceType> IncomeSourceTypes { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<NotificationStatu> NotificationStatus { get; set; }
         public virtual DbSet<TransactionPeriod> TransactionPeriods { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<TransactionType> TransactionTypes { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<FrequencyType> FrequencyTypes { get; set; }
-        public virtual DbSet<Notification> Notifications { get; set; }
-        public virtual DbSet<NotificationStatu> NotificationStatus { get; set; }
     }
 }

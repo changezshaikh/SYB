@@ -14,7 +14,7 @@ namespace SaveYourBacon.API.Controllers
 {
     public class UsersController : ApiController
     {
-        private SaveYourBaconEntities db = new SaveYourBaconEntities();
+        private SaveYourBaconEntities2 db = new SaveYourBaconEntities2();
 
         // GET: api/Users
         public IQueryable<User> GetUsers()
@@ -37,19 +37,28 @@ namespace SaveYourBacon.API.Controllers
 
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutUser(int id, User user)
+        public IHttpActionResult PutUser(User user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != user.UserId)
+            User existingUser = db.Users.Where(u => u.UserId == user.UserId).FirstOrDefault();
+
+            if(existingUser == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            db.Entry(user).State = EntityState.Modified;
+            existingUser.FirstName = user.FirstName;
+            existingUser.LastName = user.LastName;
+            existingUser.GoLiveDate = user.GoLiveDate;
+            existingUser.Username = user.Username;
+            existingUser.Email = user.Email;
+            existingUser.WhenModified = DateTime.Now;
+
+            db.Entry(existingUser).State = EntityState.Modified;
 
             try
             {
@@ -57,7 +66,7 @@ namespace SaveYourBacon.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!UserExists(user.UserId))
                 {
                     return NotFound();
                 }

@@ -1,5 +1,5 @@
 <section class="ExpenseOverview bottom-spacing">
-  <div class="loader__container" *ngIf="!expenses.length">
+  <div class="loader__container" *ngIf="loading">
       <md-spinner></md-spinner>
   </div>
   <div class="boxed-container datagrid__container">
@@ -7,9 +7,9 @@
         <p-header>Expense Overview</p-header>
         <p-column field="ExpenseName" header="Expense Account" sortable="true"></p-column>
         <p-column field="BillAmount" header="Total Amount" sortable="true">
-            <template let-col let-car="rowData" pTemplate="body">
-                {{car[col.field] | currency:'USD':true}}
-            </template>
+            <ng-template let-col let-expense="rowData" pTemplate="body">
+                {{expense[col.field] | currency:'USD':true}}
+            </ng-template>
         </p-column>
     </p-dataTable>
   </div>

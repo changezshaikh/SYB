@@ -9,5 +9,7 @@ export class Transaction{
     SurplusDeficit: string;
     UserId: number;
     ExpenseName: string;
-    ExpenseAccountName: string;    
+    ExpenseAccountName: string;
+    IncomeSourceName: string;
+    Frequency: string;    
 }

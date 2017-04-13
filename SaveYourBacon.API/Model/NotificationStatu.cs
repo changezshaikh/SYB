@@ -14,17 +14,7 @@ namespace SaveYourBacon.API.Model
     
     public partial class NotificationStatu
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public NotificationStatu()
-        {
-            this.Notifications = new HashSet<Notification>();
-        }
-    
         public int StatusId { get; set; }
         public string StatusName { get; set; }
-    
-        public virtual Notification Notification { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Notification> Notifications { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace SaveYourBacon.API.Controllers
 {
     public class IncomeController : ApiController
     {
-        private SaveYourBaconEntities db = new SaveYourBaconEntities();
+        private SaveYourBaconEntities2 db = new SaveYourBaconEntities2();
 
         // GET: api/Income
         public IQueryable<Income> GetIncomes()
@@ -26,7 +26,14 @@ namespace SaveYourBacon.API.Controllers
         [ResponseType(typeof(Income))]
         public IQueryable<Income> GetIncomeByUserId(int id)
         {
-            return db.Incomes.Where(income => income.UserId == id);
+            var incomes = db.Incomes.Where(income => income.UserId == id);
+
+            foreach(Income _income in incomes)
+            {
+                _income.LinkedExpenses = GetLinkedExpenseString(_income.LinkedExpenses);
+            }
+
+            return incomes;
         }
 
         // GET: api/Income/5
@@ -186,6 +193,28 @@ namespace SaveYourBacon.API.Controllers
         private bool IncomeExists(int id)
         {
             return db.Incomes.Count(e => e.IncomeId == id) > 0;
+        }
+
+        private string GetLinkedExpenseString(string linkedExpense)
+        {
+            var expenseString = "";
+
+            var expenses = linkedExpense.Split(',');
+
+            int count = 0;
+            foreach(string expense in expenses)
+            {
+                if (string.IsNullOrEmpty(expense)) continue;
+                var expenseAccountId = Convert.ToInt32(expense);
+                var _expense = db.ExpenseAccounts.Where(e => e.ExpenseAccountId == expenseAccountId).FirstOrDefault();
+                if(_expense != null)
+                {
+                    expenseString += count > 0 ? ", " + _expense.ExpenseAccountName : _expense.ExpenseAccountName;
+                    count++;
+                }
+            }
+
+            return expenseString;
         }
     }
 }

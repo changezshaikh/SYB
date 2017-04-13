@@ -11,7 +11,7 @@ namespace SaveYourBacon.API.Controllers
 {
     public class ImpDatesController : ApiController
     {
-        private SaveYourBaconEntities db = new SaveYourBaconEntities();
+        private SaveYourBaconEntities2 db = new SaveYourBaconEntities2();
 
         // GET: api/ImpDates/5
         

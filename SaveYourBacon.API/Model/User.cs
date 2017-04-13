@@ -14,17 +14,6 @@ namespace SaveYourBacon.API.Model
     
     public partial class User
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
-        {
-            this.ExpenseAccounts = new HashSet<ExpenseAccount>();
-            this.Expenses = new HashSet<Expense>();
-            this.Incomes = new HashSet<Income>();
-            this.IncomeSourceTypes = new HashSet<IncomeSourceType>();
-            this.TransactionPeriods = new HashSet<TransactionPeriod>();
-            this.Notifications = new HashSet<Notification>();
-        }
-    
         public int UserId { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
@@ -37,18 +26,6 @@ namespace SaveYourBacon.API.Model
         public Nullable<System.DateTime> GoLiveDate { get; set; }
         public Nullable<System.DateTime> WhenCreated { get; set; }
         public Nullable<System.DateTime> WhenModified { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ExpenseAccount> ExpenseAccounts { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Expense> Expenses { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Income> Incomes { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<IncomeSourceType> IncomeSourceTypes { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TransactionPeriod> TransactionPeriods { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Notification> Notifications { get; set; }
+        public string PasswordSalt { get; set; }
     }
 }

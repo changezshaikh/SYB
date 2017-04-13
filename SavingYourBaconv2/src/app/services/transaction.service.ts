@@ -29,6 +29,18 @@ export class TransactionService {
                     .catch(this.handleError);
   }
 
+  getImportantExpenseDates(userId){
+    return this.http.get(this.transactionUrl + "/getimportantdatesforuser/" + userId)
+                    .map(res => res.json())
+                    .catch(this.handleError);
+  }
+
+  getIncomeOverview(userId): Observable<Transaction[]> {
+    return this.http.get(this.transactionUrl + '/GetIncomeTransactionsByUserId/' + userId)
+                    .map(res => res.json())
+                    .catch(this.handleError);
+  }
+
   private handleError (error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;

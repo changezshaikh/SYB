@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TransactionService } from '../services/transaction.service';
 import { Transaction } from '../data-objects/transaction';
+import { User } from '../data-objects/user';
 
 @Component({
   selector: 'my-account',
@@ -12,19 +13,22 @@ export class MyAccountComponent implements OnInit {
 
   transactions: Transaction[] = [];
   mode = 'Observable';
-  userId = 1000;
+  currentUser: User;
   errorMessage: string;
+  loading: boolean = true;
 
   constructor(private transactionService: TransactionService) { }
 
   ngOnInit() {
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getExpenseTransactionsForUser();
   }
 
   getExpenseTransactionsForUser(){
-    this.transactionService.getExpensesForUser(this.userId)
+    this.transactionService.getExpensesForUser(this.currentUser.UserId)
       .subscribe(data => this.transactions = data,
-      error => this.errorMessage = <any>error);
+      error => this.errorMessage = <any>error,
+      () => {this.loading = false});
   }
 
   calculateGroupTotal(expenseAccount: string){

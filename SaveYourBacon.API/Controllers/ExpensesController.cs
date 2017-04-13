@@ -9,12 +9,13 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using SaveYourBacon.API.Model;
+using static SaveYourBacon.API.Model.Constants;
 
 namespace SaveYourBacon.API.Controllers
 {
     public class ExpensesController : ApiController
     {
-        private SaveYourBaconEntities db = new SaveYourBaconEntities();
+        private SaveYourBaconEntities2 db = new SaveYourBaconEntities2();
 
         // GET: api/Expenses
         public IQueryable<Expense> GetExpenses()
@@ -33,7 +34,13 @@ namespace SaveYourBacon.API.Controllers
         [ResponseType(typeof(Expense))]
         public IQueryable<Expense> GetExpenseByUserId(int id)
         {
-            return db.Expenses.Where(expense => expense.UserId == id);
+            var expenses = db.Expenses.Where(expense => expense.UserId == id);
+            //var expenses = from e in db.Expenses
+            //               from ea in db.ExpenseAccounts
+            //               where e.ExpenseAccountId == ea.ExpenseAccountId && e.UserId == id
+            //               select e,ea;
+
+            return expenses;
         }
 
         [ResponseType(typeof(Expense))]
@@ -76,7 +83,7 @@ namespace SaveYourBacon.API.Controllers
         [ResponseType(typeof(Expense))]
         public IHttpActionResult PostExpense(Expense expense)
         {
-            if (!ModelState.IsValid)
+                if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -85,6 +92,8 @@ namespace SaveYourBacon.API.Controllers
             int newId = (null == e ? 1000 : e.ExpenseId) + 1;
 
             expense.ExpenseId = newId;
+            expense.IsProcessed = (int)ProcessedStatus.Pending;
+            expense.WhenCreated = DateTime.Now;
 
             db.Expenses.Add(expense);
 
@@ -102,6 +111,11 @@ namespace SaveYourBacon.API.Controllers
                 {
                     throw;
                 }
+            }
+            finally
+            {
+                var tc = new TransactionsController();
+                tc.GenerateExpenseTransactionsForUser(expense.UserId);
             }
 
             return CreatedAtRoute("DefaultApi", new { id = expense.ExpenseId }, expense);

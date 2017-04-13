@@ -1,34 +1,41 @@
 <section class="ExpenseAccounts bottom-spacing">
-  <div class="loader__container" *ngIf="!expenses.length">
-      <md-spinner></md-spinner>
+  <div class="loader__container" *ngIf="loading">
+    <md-spinner></md-spinner>
   </div>
-  <div class="margin-bottom-20">
-    <button md-raised-button (click)="createExpenseAccount()">Create Expense Account</button>
-    <button md-raised-button routerLink="/create-expense">Create Expense</button>
-  </div>
-  <p-dataTable [value]="expenses" [editable]="true" rowGroupMode="subheader" groupField="ExpenseAccount.ExpenseAccountName" expandableRowGroups="false"
-        [sortableRowGroup]="true" sortField="ExpenseAccount.ExpenseAccountName" class="margin-top-20" (onEditComplete)="handleExpenseEdit($event)">
-      <template pTemplate="rowgroupheader" let-rowData>{{rowData['ExpenseAccount'].ExpenseAccountName}}</template>
+  <md-card>
+    <div class="margin-bottom-20">
+      <button md-raised-button (click)="createExpenseAccount()">Create Expense Account</button>
+      <button md-raised-button routerLink="/create-expense" [disabled]="expenseAccounts.length < 1">Create Expense</button>
+    </div>
+    <p-dataTable [value]="expenses" [editable]="true" [responsive]="true" rowGroupMode="subheader" groupField="ExpenseAccount.ExpenseAccountName"
+      expandableRowGroups="false" [sortableRowGroup]="true" sortField="ExpenseAccount.ExpenseAccountName" class="margin-top-20"
+      (onEditComplete)="handleExpenseEdit($event)">
+      <ng-template pTemplate="rowgroupheader" let-rowData>{{rowData['ExpenseAccount'].ExpenseAccountName}}</ng-template>
       <p-column field="ExpenseName" header="Expense" sortable="true"></p-column>
       <p-column field="BillAmount" header="Bill Amount" sortable="true" [editable]="true">
-          <template let-col let-expense="rowData" pTemplate="body">
-              {{expense[col.field] ? (expense[col.field] | currency:'USD':true) : ""}}
-          </template>
+        <ng-template let-col let-expense="rowData" pTemplate="body">
+          {{expense[col.field] ? (expense[col.field] | currency:'USD':true) : ""}}
+        </ng-template>
       </p-column>
       <p-column field="BillDate" header="Bill Date" sortable="true">
-          <template let-col let-expense="rowData" pTemplate="body">
-              {{expense[col.field] | date: 'dd/MM/y'}}
-          </template>
+        <ng-template let-col let-expense="rowData" pTemplate="body">
+          {{expense[col.field] | date: 'dd/MM/y'}}
+        </ng-template>
       </p-column>
       <p-column field="Frequency" header="Frequency"></p-column>
-      <p-column field="AmountType.TypeName" header="Recurring" sortable="true"></p-column>
+      <p-column field="ExpenseAmountTypeId" header="Recurring" sortable="true">
+        <ng-template let-col let-expense="rowData" pTemplate="body">
+          {{getTypeName(expense[col.field])}}
+        </ng-template>
+      </p-column>
       <p-column>
-        <template let-expense="rowData" pTemplate="body">
+        <ng-template let-expense="rowData" pTemplate="body">
           <div class="button-row">
             <button md-mini-fab routerLink="/create-expense/{{expense.ExpenseId}}"><md-icon>edit</md-icon></button>
             <!--<button md-mini-fab (click)="deleteExpense(expense)"><md-icon>delete</md-icon></button>-->
           </div>
-        </template>
+        </ng-template>
       </p-column>
-  </p-dataTable>
+    </p-dataTable>
+  </md-card>
 </section>

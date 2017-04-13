@@ -1,0 +1,76 @@
+<section class="UserPreferences">
+  <div class="col-md-6 col-xs-12">
+    <md-card>
+      <md-tab-group dynamicHeight="true">
+        <md-tab label="Profile">
+          <form name="update-profile" (ngSubmit)="f1.form.valid && saveUserRecord()" class="margin-top-20" #f1="ngForm" novalidate>
+            <div class="form-group">
+              <md-input-container class="full-width-form-control">
+                <input mdInput placeholder="First Name" [(ngModel)]="firstName" name="firstName" required #fName="ngModel">
+                <md-error *ngIf="fName.touched && !fName.valid">First Name is required</md-error>
+              </md-input-container>
+            </div>
+            <div class="form-group">
+              <md-input-container class="full-width-form-control">
+                <input mdInput placeholder="Last Name" [(ngModel)]="lastName" name="lastName" required #lName="ngModel">
+                <md-error *ngIf="lName.touched && !lName.valid">Last Name is required</md-error>
+              </md-input-container>
+            </div>
+            <div class="form-group">
+              <md-input-container class="full-width-form-control">
+                <input mdInput placeholder="Email Address" [(ngModel)]="email" name="email" required #emailAddress="ngModel">
+                <md-error *ngIf="emailAddress.touched && !emailAddress.valid">Email is required</md-error>
+              </md-input-container>
+            </div>
+            <div class="form-group">
+              <label for="goLiveDate">Go Live Date</label>
+              <p-calendar [(ngModel)]="goLiveDate" dateFormat="dd/mm/yy" name="goLiveDate" placeholder="Go Live Date" [showIcon]="true"
+                [disabled]="true"></p-calendar>
+            </div>
+            <md-card-actions>
+              <button md-raised-button [disabled]="!f1.form.valid || loading">Save</button>
+            </md-card-actions>
+          </form>
+        </md-tab>
+        <md-tab label="Update Password">
+          <form name="update-password" (ngSubmit)="f2.form.valid && saveUserPassword()" class="margin-top-20" #f2="ngForm" novalidate>
+            <div class="form-group">
+              <md-input-container class="full-width-form-control">
+                <input mdInput placeholder="Old Password" [(ngModel)]="oldPassword" name="oldPassword" required #oPassword="ngModel" type="password">
+                <md-error *ngIf="oPassword.touched && !oPassword.valid">Please enter your old password</md-error>
+              </md-input-container>
+            </div>
+            <div class="form-group">
+              <md-input-container class="full-width-form-control">
+                <input mdInput placeholder="New Password" [(ngModel)]="newPassword" name="newPassword" required #nPassword="ngModel" type="password">
+                <md-error *ngIf="nPassword.touched && !nPassword.valid">Please enter your new password</md-error>
+              </md-input-container>
+            </div>
+            <div class="form-group">
+              <md-input-container class="full-width-form-control">
+                <input mdInput placeholder="Repeat Password" [(ngModel)]="repeatPassword" name="repeatPassword" required #rPassword="ngModel"
+                  type="password">
+                <md-error *ngIf="rPassword.touched && !rPassword.valid">Please repeat your password</md-error>
+              </md-input-container>
+            </div>
+            <md-card-actions>
+              <button md-raised-button [disabled]="!f2.form.valid">Save</button>
+            </md-card-actions>
+          </form>
+        </md-tab>
+      </md-tab-group>
+
+    </md-card>
+  </div>
+  <!--<div class="col-md-4">
+    <md-card>
+      
+    </md-card>
+  </div>-->
+  <!--<div class="col-md-4">
+    <md-card>
+      <!--<form name="update-email" (ngSubmit)="f.form.valid && saveUserEmail()" #f="ngForm" novalidate>
+      </form>
+    </md-card>
+  </div>-->
+</section>

@@ -14,7 +14,7 @@ namespace SaveYourBacon.API.Controllers
 {
     public class NotificationsController : ApiController
     {
-        private SaveYourBaconEntities db = new SaveYourBaconEntities();
+        private SaveYourBaconEntities2 db = new SaveYourBaconEntities2();
 
         // GET: api/Notifications
         public IQueryable<Notification> GetNotifications()

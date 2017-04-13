@@ -27,5 +27,6 @@ namespace SaveYourBacon.API.Model
         public Nullable<int> UserId { get; set; }
     
         public virtual TransactionPeriod TransactionPeriod { get; set; }
+        public virtual TransactionType TransactionType { get; set; }
     }
 }

@@ -14,7 +14,16 @@ namespace SaveYourBacon.API.Model
     
     public partial class TransactionType
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public TransactionType()
+        {
+            this.Transactions = new HashSet<Transaction>();
+        }
+    
         public int TransactionTypeId { get; set; }
         public string TransactionName { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }

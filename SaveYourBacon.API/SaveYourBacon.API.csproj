@@ -123,6 +123,7 @@
     <Compile Include="Model\AmountType.cs">
       <DependentUpon>SYBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\ChangePasswordModel.cs" />
     <Compile Include="Model\Constants.cs" />
     <Compile Include="Model\Expense.cs">
       <DependentUpon>SYBModel.tt</DependentUpon>
@@ -147,6 +148,7 @@
     <Compile Include="Model\NotificationStatu.cs">
       <DependentUpon>SYBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\RegisterModel.cs" />
     <Compile Include="Model\SYBModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

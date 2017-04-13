@@ -1,20 +1,26 @@
 <section class="CreateExpense">
-  <span class="widget--header">Create Expense</span>
+  <div class="loader__container" *ngIf="loading">
+    <md-spinner></md-spinner>
+  </div>
   <md-card class="boxed-container">
-    
-      <div class="row" *ngIf="!addPreviousBills">
-        
+    <span class="widget--header margin-bottom-20">Create Expense</span>
+
+    <div class="row" *ngIf="!addPreviousBills">
+      <form name="create-expense" (ngSubmit)="f.form.valid && saveExpenseRecord()" #f="ngForm" novalidate>
+
         <div class="col-md-12">
           <div class="form-group">
-            <md-select placeholder="Select Expense Account" [(ngModel)]="selectedExpenseAccount" name="expenseType" class="full-width-form-control" (change)="updateExpenseNames($event.value)">
+            <md-select placeholder="Select Expense Account" [(ngModel)]="selectedExpenseAccount" name="expenseType" class="full-width-form-control"
+              (change)="updateExpenseNames($event.value)" required #exType="ngModel">
               <md-option *ngFor="let type of expenseTypes" [value]="type.ExpenseAccountId">
                 {{type.ExpenseAccountName}}
               </md-option>
             </md-select>
+            <md-error *ngIf="exType.touched && !exType.valid">Expense Account name is required</md-error>            
           </div>
           <div class="form-group">
-            <md-select placeholder="Create Expense Name" [(ngModel)]="selectedExpenseName" name="expenseName" class="full-width-form-control">
-              <md-option *ngFor="let name of expenseAccountForNames.Expenses" [value]="name.ExpenseName">
+            <md-select placeholder="Create Expense Name" [(ngModel)]="selectedExpenseName" name="selectedExpenseName" class="full-width-form-control" required>
+              <md-option *ngFor="let name of expenseAccountForNames.Expenses" [value]="name.ExpenseName" >
                 {{name.ExpenseName}}
               </md-option>
               <md-option value="-1" (click)="openDialog()">
@@ -29,26 +35,27 @@
           </div>
           <div class="form-group">
             <md-input-container class="full-width-form-control">
-              <input mdInput placeholder="Bill Amount" [(ngModel)] = "billAmount" name="billAmount">
+              <input mdInput placeholder="Bill Amount" [(ngModel)]="billAmount" name="billAmount" type="number" required #expenseAmt="ngModel">
+              <md-error *ngIf="expenseAmt.touched && !expenseAmt.valid">Income Amount is required</md-error>
             </md-input-container>
           </div>
           <div class="form-group">
             <label for="expenseType">Type of Expense</label>
-            <md-radio-group [(ngModel)]="selectedExpenseType" name="expenseTypes" class="radio-group-vertical">
+            <md-radio-group [(ngModel)]="selectedExpenseType" name="expenseTypes" class="radio-group-vertical" required>
               <md-radio-button *ngFor="let option of expenseTypeOptions" [value]="option.id" class="radio-button">
                 {{option.value}}
               </md-radio-button>
             </md-radio-group>
-            <md-select placeholder="Variable/Fixed" [(ngModel)]="recurringType" name="recurringType" class="subtype--dropdown" *ngIf="selectedExpenseType == -1">
+            <md-select placeholder="Variable/Fixed" [(ngModel)]="recurringType" name="recurringType" class="subtype--dropdown" *ngIf="selectedExpenseType == -1" required>
               <md-option *ngFor="let type of recurringTypes" [value]="type.id">
                 {{type.value}}
               </md-option>
             </md-select>
           </div>
           <div class="form-group">
-            <p-calendar [(ngModel)]="billDate" dateFormat="dd/mm/yy" name="billDate"></p-calendar>
+            <p-calendar [(ngModel)]="billDate" dateFormat="dd/mm/yy" name="billDate" placeholder="Bill Date" [showIcon]="true" readonlyInput="readonlyInput" required></p-calendar>
           </div>
-          <div class="form-group">
+          <div class="form-group" *ngIf="selectedExpenseType == -1">
             <md-select placeholder="Frequency" [(ngModel)]="selectedFrequencyType" name="frequencyType" class="full-width-form-control">
               <md-option *ngFor="let type of frequencyTypes" [value]="type.FrequencyName">
                 {{type.FrequencyName}}
@@ -58,46 +65,48 @@
         </div>
         <div class="col-md-12 button__container">
           <button md-button routerLink="/expense-accounts">Cancel</button>
-          <button md-raised-button (click)="saveExpenseRecord()">{{isInEditMode? 'Save':'Add'}}</button>
+          <button md-raised-button [disabled]="!f.form.valid">{{isInEditMode? 'Save':'Add'}}</button>
         </div>
 
-      </div>
-      <div class="row" *ngIf="addPreviousBills">
-        
-        <div class="col-md-12">
-          <div class="col-md-6">
-            <div class="form-group">
-              <p-calendar [(ngModel)]="previousBillDate" dateFormat="dd/mm/yy" name="previousBillDate" placeholder="Previous Bill Date"></p-calendar>
-            </div>
-            <div class="form-group">
-              <md-input-container class="full-width-form-control">
-                <input mdInput placeholder="Previous Bill Amount" [(ngModel)] = "previousBillAmount" name="previousBillAmount">
-              </md-input-container>
-            </div>
-            <div class="button__container">
-              <button md-raised-button (click)="addPreviousBill()">Add</button>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <p-dataTable [value]="previousBills" *ngIf="previousBills.length">
-              <p-column field="BillDate" header="Bill Date" sortable="true">
-                <template let-col let-bill="rowData" pTemplate="body">
-                  {{bill[col.field] | date: 'dd/MM/y'}}
-                </template>
-              </p-column>
-              <p-column field="BillAmount" header="Bill Amount" sortable="true">
-                  <template let-col let-car="rowData" pTemplate="body">
-                      {{car[col.field] | currency:'USD':true}}
-                  </template>
-              </p-column>
-            </p-dataTable>
-          </div>
-        </div>
-        <div class="col-md-12 button__container">
-          <button md-button routerLink="/expense-accounts">Cancel</button>
-          <button md-raised-button (click)="savePreviousBills()">Save</button>
-        </div>
+      </form>
+    </div>
+    <div class="row" *ngIf="addPreviousBills">
 
+      <div class="col-md-12">
+        <div class="col-md-6">
+          <div class="form-group">
+            <p-calendar [(ngModel)]="previousBillDate" dateFormat="dd/mm/yy" name="previousBillDate" placeholder="Previous Bill Date"
+              readonlyInput="readonlyInput"></p-calendar>
+          </div>
+          <div class="form-group">
+            <md-input-container class="full-width-form-control">
+              <input mdInput placeholder="Previous Bill Amount" [(ngModel)]="previousBillAmount" name="previousBillAmount">
+            </md-input-container>
+          </div>
+          <div class="button__container">
+            <button md-raised-button (click)="addPreviousBill()">Add</button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <p-dataTable [value]="previousBills" *ngIf="previousBills.length">
+            <p-column field="BillDate" header="Bill Date" sortable="true">
+              <ng-template let-col let-bill="rowData" pTemplate="body">
+                {{bill[col.field] | date: 'dd/MM/y'}}
+              </ng-template>
+            </p-column>
+            <p-column field="BillAmount" header="Bill Amount" sortable="true">
+              <ng-template let-col let-car="rowData" pTemplate="body">
+                {{car[col.field] | currency:'USD':true}}
+              </ng-template>
+            </p-column>
+          </p-dataTable>
+        </div>
       </div>
+      <div class="col-md-12 button__container">
+        <button md-button routerLink="/expense-accounts">Cancel</button>
+        <button md-raised-button (click)="savePreviousBills()">Save</button>
+      </div>
+
+    </div>
   </md-card>
 </section>

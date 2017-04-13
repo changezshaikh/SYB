@@ -1,71 +1,33 @@
-<div class="materialContainer">
-
-
-   <div class="box">
-
-      <div class="title">LOGIN</div>
-
-      <!--<div class="input">
-         <label for="name">Username</label>
-         <input type="text" name="name" id="name">
-         <span class="spin"></span>
-      </div>-->
-      <md-input-container class="full-width-form-control login-input">
-        <input mdInput placeholder="Username" [(ngModel)] = "username" name="username">
+<md-card id="signup" class="col-md-5 col-md-offset-3 col-xs-12">
+  <md-card-title>Register</md-card-title>
+  <form class="form-register" name="register" (ngSubmit)="f.form.valid && register()" #f="ngForm" novalidate>
+    <md-card-content>
+      <md-input-container class="full-width-form-control">
+        <input mdInput placeholder="First Name" [(ngModel)]="model.firstName" name="firstName" #firstName="ngModel" required>
+        <md-error *ngIf="f.submitted && !firstName.valid">First Name is required</md-error>
       </md-input-container>
-
-      <md-input-container class="full-width-form-control login-input">
-        <input mdInput placeholder="Password" [(ngModel)] = "password" name="password">
+      <md-input-container class="full-width-form-control">
+        <input mdInput placeholder="Last Name" [(ngModel)]="model.lastName" name="lastName" #lastName="ngModel" required>
+        <md-error *ngIf="f.submitted && !lastName.valid">Last Name is required</md-error>
       </md-input-container>
-
-      <!--<div class="input">
-         <label for="pass">Password</label>
-         <input type="password" name="pass" id="pass">
-         <span class="spin"></span>
-      </div>-->
-
-      <div class="button login">
-         <button><span>GO</span> <i class="fa fa-check"></i></button>
-      </div>
-
-      <a href="" class="pass-forgot">Forgot your password?</a>
-
-   </div>
-
-   <div class="overbox">
-      <div class="material-button alt-2"><span class="shape"></span></div>
-
-      <div class="title">REGISTER</div>
-
-      <div class="input">
-         <label for="regname">Username</label>
-         <input type="text" name="regname" id="regname">
-         <span class="spin"></span>
-      </div>
-
-      <div class="input">
-         <label for="regpass">Password</label>
-         <input type="password" name="regpass" id="regpass">
-         <span class="spin"></span>
-      </div>
-
-      <div class="input">
-         <label for="reregpass">Repeat Password</label>
-         <input type="password" name="reregpass" id="reregpass">
-         <span class="spin"></span>
-      </div>
-
-      <div class="input">
-         <label for="reregpass">Repeat Password</label>
-         <input type="password" name="reregpass" id="reregpass">
-         <span class="spin"></span>
-      </div>
-
-      <div class="button">
-         <button><span>NEXT</span></button>
-      </div>
-
-
-   </div>
-
-</div>
+      <md-input-container class="full-width-form-control">
+        <input mdInput placeholder="Email" [(ngModel)]="model.email" type="email" name="email" #email="ngModel" minlength="4" required>
+        <md-error *ngIf="f.submitted && !email.valid">Email is required</md-error>
+      </md-input-container>
+      <md-input-container class="full-width-form-control">
+        <input mdInput placeholder="Confirm Email" [(ngModel)]="model.confirmEmail" type="email" name="confirmEmail" #confirmEmail="ngModel" required>
+        <md-error *ngIf="f.submitted && (!confirmEmail.valid )">Please confirm the email</md-error>
+      </md-input-container>
+      <md-input-container class="full-width-form-control">
+        <input mdInput placeholder="Password" [(ngModel)]="model.password" type="password" name="password" #password="ngModel" minlength="8" required>
+        <md-error *ngIf="f.submitted && !password.valid.required">Please enter a password</md-error>
+        <md-error *ngIf="f.submitted && !password.valid.minlength">Password must be at least 8 characters</md-error>
+      </md-input-container>
+      <div *ngIf="error" class="alert alert-danger">{{error}}</div>
+    </md-card-content>
+    <md-card-actions>
+      <button md-raised-button [disabled]="loading">Register</button>
+      <button type="button" md-button (click)="goBack()">Cancel</button>
+    </md-card-actions>
+  </form>
+</md-card>

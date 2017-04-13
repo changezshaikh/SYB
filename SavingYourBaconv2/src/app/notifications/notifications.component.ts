@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Notification } from '../data-objects/notification';
 import { NotificationService } from '../services/notification.service';
 import { MdDialog, MdDialogRef, MdDialogConfig } from '@angular/material';
+import { User } from '../data-objects/user';
+import { Message } from '../data-objects/message';
 
 @Component({
   selector: 'notifications',
@@ -13,19 +15,22 @@ export class NotificationsComponent implements OnInit {
 
   notifications: Notification[] = [];
   mode = 'Observable';
-  userId = 1000;
+  currentUser: User;
   errorMessage: string;
+  loading: boolean = true;
 
   constructor(public dialog: MdDialog, private notificationService: NotificationService) { }
 
   ngOnInit() {
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getNotificationsForUser();
   }
 
   getNotificationsForUser(){
-    this.notificationService.getNotificationsForUser(this.userId)
+    this.notificationService.getNotificationsForUser(this.currentUser.UserId)
       .subscribe(data => this.notifications = data,
-      error => this.errorMessage = <any>error);
+      error => this.errorMessage = <any>error,
+      () => {this.loading = false});
   }
 
   viewNotification(notification){
@@ -45,7 +50,7 @@ export class NotificationsComponent implements OnInit {
 })
 export class ViewNotificationDialog {
 
-  notification = {};
+  notification: Message = new Message();
 
   constructor(public dialogRef: MdDialogRef<ViewNotificationDialog>) { }
 

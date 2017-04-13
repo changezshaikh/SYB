@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Expense } from '../data-objects/expense';
 
 import { ExpenseService } from '../services/expense.service';
+import {User} from '../data-objects/user';
 
 declare var $:any;
 
@@ -17,20 +18,23 @@ export class ExpenseOverviewComponent implements OnInit {
   errorMessage: string;
   expenses: Expense[] = [];
   mode = 'Observable';
-  userId = 1000;
+  currentUser: User;
+  loading: boolean = true;
 
   constructor(private expenseService: ExpenseService) {
 
   }
 
   ngOnInit() {
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getExpenses();
   }
 
   getExpenses(){
-      this.expenseService.getExpense(this.userId)
+      this.expenseService.getExpense(this.currentUser.UserId)
                         .subscribe(data => this.expenses = data,
-                                    error =>  this.errorMessage = <any>error);
+                                    error =>  this.errorMessage = <any>error,
+      () => {this.loading = false});
   }
 
   ngAfterViewInit(): void{

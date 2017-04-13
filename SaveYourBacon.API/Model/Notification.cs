@@ -23,8 +23,6 @@ namespace SaveYourBacon.API.Model
         public string MessageBody { get; set; }
         public Nullable<System.DateTime> WhenCreated { get; set; }
     
-        public virtual User User { get; set; }
         public virtual NotificationStatu NotificationStatu { get; set; }
-        public virtual NotificationStatu NotificationStatu1 { get; set; }
     }
 }

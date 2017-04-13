@@ -37,6 +37,8 @@
           <Property Name="ExpenseAmountTypeId" Type="int" Nullable="false" />
           <Property Name="WhenCreated" Type="datetime" />
           <Property Name="WhenModified" Type="datetime" />
+          <Property Name="EndDate" Type="date" />
+          <Property Name="IsProcessed" Type="int" />
         </EntityType>
         <EntityType Name="FrequencyType">
           <Key>
@@ -58,6 +60,8 @@
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="ExpenseAmountTypeId" Type="int" Nullable="false" />
           <Property Name="WhenCreated" Type="date" Nullable="false" />
+          <Property Name="IsActive" Type="int" />
+          <Property Name="IsProcessed" Type="int" />
         </EntityType>
         <EntityType Name="IncomeSourceTypes">
           <Key>
@@ -125,17 +129,18 @@
             <PropertyRef Name="UserId" />
           </Key>
           <Property Name="UserId" Type="int" Nullable="false" />
-          <Property Name="Username" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="Email" Type="varchar" MaxLength="35" Nullable="false" />
-          <Property Name="UserPassword" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="UserPassword" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="DateOfBirth" Type="date" />
-          <Property Name="Gender" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="Gender" Type="varchar" MaxLength="5" />
           <Property Name="BusinessName" Type="varchar" MaxLength="50" />
           <Property Name="GoLiveDate" Type="date" />
           <Property Name="WhenCreated" Type="date" />
           <Property Name="WhenModified" Type="date" />
+          <Property Name="PasswordSalt" Type="varchar(max)" />
         </EntityType>
         <Association Name="ExpenseAccounts_FK1">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -281,6 +286,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="Transactions_FK2">
+          <End Role="TransactionTypes" Type="Self.TransactionTypes" Multiplicity="1" />
+          <End Role="Transactions" Type="Self.Transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TransactionTypes">
+              <PropertyRef Name="TransactionTypeId" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="TransactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="SaveYourBaconModelStoreContainer">
           <EntitySet Name="AmountTypes" EntityType="Self.AmountTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExpenseAccounts" EntityType="Self.ExpenseAccounts" Schema="dbo" store:Type="Tables" />
@@ -342,6 +359,10 @@
             <End Role="TransactionPeriods" EntitySet="TransactionPeriods" />
             <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
+          <AssociationSet Name="Transactions_FK2" Association="Self.Transactions_FK2">
+            <End Role="TransactionTypes" EntitySet="TransactionTypes" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -354,8 +375,6 @@
           <Property Name="AmountTypeId" Type="Int32" Nullable="false" />
           <Property Name="TypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="WhenCreated" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Expenses" Relationship="Self.Expenses_FK3" FromRole="AmountTypes" ToRole="Expenses" />
-          <NavigationProperty Name="Incomes" Relationship="Self.Income_FK3" FromRole="AmountTypes" ToRole="Income" />
         </EntityType>
         <EntityType Name="ExpenseAccount">
           <Key>
@@ -366,14 +385,13 @@
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="WhenCreated" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="WhenModified" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="User" Relationship="Self.ExpenseAccounts_FK1" FromRole="ExpenseAccounts" ToRole="Users" />
           <NavigationProperty Name="Expenses" Relationship="Self.Expenses_FK1" FromRole="ExpenseAccounts" ToRole="Expenses" />
         </EntityType>
         <EntityType Name="Expense">
           <Key>
             <PropertyRef Name="ExpenseId" />
           </Key>
-          <Property Name="ExpenseId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="ExpenseId" Type="Int32" Nullable="false" />
           <Property Name="ExpenseAccountId" Type="Int32" Nullable="false" />
           <Property Name="ExpenseName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
@@ -383,9 +401,16 @@
           <Property Name="ExpenseAmountTypeId" Type="Int32" Nullable="false" />
           <Property Name="WhenCreated" Type="DateTime" Precision="3" />
           <Property Name="WhenModified" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="AmountType" Relationship="Self.Expenses_FK3" FromRole="Expenses" ToRole="AmountTypes" />
           <NavigationProperty Name="ExpenseAccount" Relationship="Self.Expenses_FK1" FromRole="Expenses" ToRole="ExpenseAccounts" />
-          <NavigationProperty Name="User" Relationship="Self.Expenses_FK2" FromRole="Expenses" ToRole="Users" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <Property Name="IsProcessed" Type="Int32" />
+        </EntityType>
+        <EntityType Name="FrequencyType">
+          <Key>
+            <PropertyRef Name="FrequencyId" />
+          </Key>
+          <Property Name="FrequencyId" Type="Int32" Nullable="false" />
+          <Property Name="FrequencyName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
         <EntityType Name="Income">
           <Key>
@@ -400,9 +425,9 @@
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="ExpenseAmountTypeId" Type="Int32" Nullable="false" />
           <Property Name="WhenCreated" Type="DateTime" Nullable="false" Precision="0" />
-          <NavigationProperty Name="AmountType" Relationship="Self.Income_FK3" FromRole="Income" ToRole="AmountTypes" />
           <NavigationProperty Name="IncomeSourceType" Relationship="Self.Income_FK1" FromRole="Income" ToRole="IncomeSourceTypes" />
-          <NavigationProperty Name="User" Relationship="Self.Income_FK2" FromRole="Income" ToRole="Users" />
+          <Property Name="IsActive" Type="Int32" />
+          <Property Name="IsProcessed" Type="Int32" />
         </EntityType>
         <EntityType Name="IncomeSourceType">
           <Key>
@@ -413,7 +438,27 @@
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="WhenCreated" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Incomes" Relationship="Self.Income_FK1" FromRole="IncomeSourceTypes" ToRole="Income" />
-          <NavigationProperty Name="User" Relationship="Self.IncomeSourceTypes_FK1" FromRole="IncomeSourceTypes" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Notification">
+          <Key>
+            <PropertyRef Name="NotificationId" />
+          </Key>
+          <Property Name="NotificationId" Type="Int32" Nullable="false" />
+          <Property Name="NotificationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="NotificationFrom" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="MessageBody" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="WhenCreated" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="NotificationStatu" Relationship="Self.Notifications_FK2" FromRole="Notifications" ToRole="NotificationStatus" />
+        </EntityType>
+        <EntityType Name="NotificationStatu">
+          <Key>
+            <PropertyRef Name="StatusId" />
+          </Key>
+          <Property Name="StatusId" Type="Int32" Nullable="false" />
+          <Property Name="StatusName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
         <EntityType Name="TransactionPeriod">
           <Key>
@@ -440,8 +485,9 @@
           <Property Name="AmountContributed" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="SurplusDeficit" Type="Decimal" Precision="19" Scale="4" />
           <Property Name="WhenCreated" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="TransactionPeriod" Relationship="Self.Transactions_FK1" FromRole="Transactions" ToRole="TransactionPeriods" />
           <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="TransactionPeriod" Relationship="Self.Transactions_FK1" FromRole="Transactions" ToRole="TransactionPeriods" />
+          <NavigationProperty Name="TransactionType" Relationship="Self.Transactions_FK2" FromRole="Transactions" ToRole="TransactionTypes" />
         </EntityType>
         <EntityType Name="TransactionType">
           <Key>
@@ -449,30 +495,26 @@
           </Key>
           <Property Name="TransactionTypeId" Type="Int32" Nullable="false" />
           <Property Name="TransactionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Transactions" Relationship="Self.Transactions_FK2" FromRole="TransactionTypes" ToRole="Transactions" />
         </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserId" />
           </Key>
           <Property Name="UserId" Type="Int32" Nullable="false" />
-          <Property Name="Username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="35" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="UserPassword" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Username" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UserPassword" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="DateOfBirth" Type="DateTime" Precision="0" />
-          <Property Name="Gender" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Gender" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="BusinessName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="GoLiveDate" Type="DateTime" Precision="0" />
           <Property Name="WhenCreated" Type="DateTime" Precision="0" />
           <Property Name="WhenModified" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="ExpenseAccounts" Relationship="Self.ExpenseAccounts_FK1" FromRole="Users" ToRole="ExpenseAccounts" />
-          <NavigationProperty Name="Expenses" Relationship="Self.Expenses_FK2" FromRole="Users" ToRole="Expenses" />
-          <NavigationProperty Name="Incomes" Relationship="Self.Income_FK2" FromRole="Users" ToRole="Income" />
-          <NavigationProperty Name="IncomeSourceTypes" Relationship="Self.IncomeSourceTypes_FK1" FromRole="Users" ToRole="IncomeSourceTypes" />
-          <NavigationProperty Name="TransactionPeriods" Relationship="Self.TransactionPeriods_FK" FromRole="Users" ToRole="TransactionPeriods" />
-          <NavigationProperty Name="Notifications" Relationship="SaveYourBaconModel.Notifications_FK1" FromRole="User" ToRole="Notification" />
-        </EntityType>
+          <Property Name="PasswordSalt" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          </EntityType>
         <Association Name="Expenses_FK3">
           <End Role="AmountTypes" Type="Self.AmountType" Multiplicity="1" />
           <End Role="Expenses" Type="SaveYourBaconModel.Expense" Multiplicity="*" />
@@ -569,6 +611,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="Notifications_FK1">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Notifications_FK2">
+          <End Role="NotificationStatus" Type="Self.NotificationStatu" Multiplicity="0..1" />
+          <End Role="Notifications" Type="Self.Notification" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="NotificationStatus">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="Notifications">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="TransactionPeriods_FK">
           <End Role="Users" Type="Self.User" Multiplicity="1" />
           <End Role="TransactionPeriods" Type="Self.TransactionPeriod" Multiplicity="*" />
@@ -593,12 +659,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="SaveYourBaconEntities" annotation:LazyLoadingEnabled="true">
+        <Association Name="Transactions_FK2">
+          <End Role="TransactionTypes" Type="Self.TransactionType" Multiplicity="1" />
+          <End Role="Transactions" Type="Self.Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TransactionTypes">
+              <PropertyRef Name="TransactionTypeId" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="TransactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SaveYourBaconEntities2" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AmountTypes" EntityType="Self.AmountType" />
           <EntitySet Name="ExpenseAccounts" EntityType="Self.ExpenseAccount" />
           <EntitySet Name="Expenses" EntityType="SaveYourBaconModel.Expense" />
+          <EntitySet Name="FrequencyTypes" EntityType="Self.FrequencyType" />
           <EntitySet Name="Incomes" EntityType="Self.Income" />
           <EntitySet Name="IncomeSourceTypes" EntityType="Self.IncomeSourceType" />
+          <EntitySet Name="Notifications" EntityType="Self.Notification" />
+          <EntitySet Name="NotificationStatus" EntityType="Self.NotificationStatu" />
           <EntitySet Name="TransactionPeriods" EntityType="Self.TransactionPeriod" />
           <EntitySet Name="Transactions" EntityType="Self.Transaction" />
           <EntitySet Name="TransactionTypes" EntityType="Self.TransactionType" />
@@ -635,6 +716,14 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="IncomeSourceTypes" EntitySet="IncomeSourceTypes" />
           </AssociationSet>
+          <AssociationSet Name="Notifications_FK1" Association="Self.Notifications_FK1">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
+          <AssociationSet Name="Notifications_FK2" Association="Self.Notifications_FK2">
+            <End Role="NotificationStatus" EntitySet="NotificationStatus" />
+            <End Role="Notifications" EntitySet="Notifications" />
+          </AssociationSet>
           <AssociationSet Name="TransactionPeriods_FK" Association="Self.TransactionPeriods_FK">
             <End Role="Users" EntitySet="Users" />
             <End Role="TransactionPeriods" EntitySet="TransactionPeriods" />
@@ -643,96 +732,17 @@
             <End Role="TransactionPeriods" EntitySet="TransactionPeriods" />
             <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
-          <EntitySet Name="FrequencyTypes" EntityType="SaveYourBaconModel.FrequencyType" />
-          <EntitySet Name="Notifications" EntityType="SaveYourBaconModel.Notification" />
-          <AssociationSet Name="Notifications_FK1" Association="SaveYourBaconModel.Notifications_FK1">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
-          <EntitySet Name="NotificationStatus" EntityType="SaveYourBaconModel.NotificationStatu" />
-          <AssociationSet Name="Notifications_FK2" Association="SaveYourBaconModel.Notifications_FK2">
-            <End Role="NotificationStatu" EntitySet="NotificationStatus" />
-            <End Role="Notification" EntitySet="Notifications" />
-          </AssociationSet>
-          <AssociationSet Name="Notifications_FK21" Association="SaveYourBaconModel.Notifications_FK21">
-            <End Role="NotificationStatu" EntitySet="NotificationStatus" />
-            <End Role="Notification" EntitySet="Notifications" />
+          <AssociationSet Name="Transactions_FK2" Association="Self.Transactions_FK2">
+            <End Role="TransactionTypes" EntitySet="TransactionTypes" />
+            <End Role="Transactions" EntitySet="Transactions" />
           </AssociationSet>
         </EntityContainer>
-        <EntityType Name="FrequencyType">
-          <Key>
-            <PropertyRef Name="FrequencyId" />
-          </Key>
-          <Property Name="FrequencyId" Type="Int32" Nullable="false" />
-          <Property Name="FrequencyName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Notification">
-          <Key>
-            <PropertyRef Name="NotificationId" />
-          </Key>
-          <Property Name="NotificationId" Type="Int32" Nullable="false" />
-          <Property Name="NotificationDate" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="NotificationFrom" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Status" Type="Int32" />
-          <Property Name="UserId" Type="Int32" />
-          <Property Name="MessageBody" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="User" Relationship="SaveYourBaconModel.Notifications_FK1" FromRole="Notification" ToRole="User" />
-          <NavigationProperty Name="NotificationStatu" Relationship="SaveYourBaconModel.Notifications_FK2" FromRole="Notification" ToRole="NotificationStatu" />
-          <Property Name="WhenCreated" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="NotificationStatu1" Relationship="SaveYourBaconModel.Notifications_FK21" FromRole="Notification" ToRole="NotificationStatu" />
-        </EntityType>
-        <Association Name="Notifications_FK1">
-          <End Type="SaveYourBaconModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="SaveYourBaconModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="NotificationStatu">
-          <Key>
-            <PropertyRef Name="StatusId" />
-          </Key>
-          <Property Name="StatusId" Type="Int32" Nullable="false" />
-          <Property Name="StatusName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Notification" Relationship="SaveYourBaconModel.Notifications_FK2" FromRole="NotificationStatu" ToRole="Notification" />
-          <NavigationProperty Name="Notifications" Relationship="SaveYourBaconModel.Notifications_FK21" FromRole="NotificationStatu" ToRole="Notification" />
-        </EntityType>
-        <Association Name="Notifications_FK2">
-          <End Type="SaveYourBaconModel.NotificationStatu" Role="NotificationStatu" Multiplicity="1" />
-          <End Type="SaveYourBaconModel.Notification" Role="Notification" Multiplicity="0..1" />
-          <ReferentialConstraint>
-            <Principal Role="NotificationStatu">
-              <PropertyRef Name="StatusId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="NotificationId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="Notifications_FK21">
-          <End Type="SaveYourBaconModel.NotificationStatu" Role="NotificationStatu" Multiplicity="0..1" />
-          <End Type="SaveYourBaconModel.Notification" Role="Notification" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="NotificationStatu">
-              <PropertyRef Name="StatusId" />
-            </Principal>
-            <Dependent Role="Notification">
-              <PropertyRef Name="Status" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="SaveYourBaconModelStoreContainer" CdmEntityContainer="SaveYourBaconEntities">
+        <EntityContainerMapping StorageEntityContainer="SaveYourBaconModelStoreContainer" CdmEntityContainer="SaveYourBaconEntities2">
           <EntitySetMapping Name="AmountTypes">
             <EntityTypeMapping TypeName="SaveYourBaconModel.AmountType">
               <MappingFragment StoreEntitySet="AmountTypes">
@@ -756,6 +766,8 @@
           <EntitySetMapping Name="Expenses">
             <EntityTypeMapping TypeName="SaveYourBaconModel.Expense">
               <MappingFragment StoreEntitySet="Expenses">
+                <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
                 <ScalarProperty Name="ExpenseId" ColumnName="ExpenseId" />
                 <ScalarProperty Name="ExpenseAccountId" ColumnName="ExpenseAccountId" />
                 <ScalarProperty Name="ExpenseName" ColumnName="ExpenseName" />
@@ -769,9 +781,19 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="FrequencyTypes">
+            <EntityTypeMapping TypeName="SaveYourBaconModel.FrequencyType">
+              <MappingFragment StoreEntitySet="FrequencyType">
+                <ScalarProperty Name="FrequencyId" ColumnName="FrequencyId" />
+                <ScalarProperty Name="FrequencyName" ColumnName="FrequencyName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Incomes">
             <EntityTypeMapping TypeName="SaveYourBaconModel.Income">
               <MappingFragment StoreEntitySet="Income">
+                <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="IncomeId" ColumnName="IncomeId" />
                 <ScalarProperty Name="IncomeSourceTypeId" ColumnName="IncomeSourceTypeId" />
                 <ScalarProperty Name="IncomeAmount" ColumnName="IncomeAmount" />
@@ -794,6 +816,28 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Notifications">
+            <EntityTypeMapping TypeName="SaveYourBaconModel.Notification">
+              <MappingFragment StoreEntitySet="Notifications">
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+                <ScalarProperty Name="NotificationDate" ColumnName="NotificationDate" />
+                <ScalarProperty Name="NotificationFrom" ColumnName="NotificationFrom" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="MessageBody" ColumnName="MessageBody" />
+                <ScalarProperty Name="WhenCreated" ColumnName="WhenCreated" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NotificationStatus">
+            <EntityTypeMapping TypeName="SaveYourBaconModel.NotificationStatu">
+              <MappingFragment StoreEntitySet="NotificationStatus">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="StatusName" ColumnName="StatusName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="TransactionPeriods">
             <EntityTypeMapping TypeName="SaveYourBaconModel.TransactionPeriod">
               <MappingFragment StoreEntitySet="TransactionPeriods">
@@ -807,7 +851,6 @@
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="SaveYourBaconModel.Transaction">
               <MappingFragment StoreEntitySet="Transactions">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
                 <ScalarProperty Name="TransactionTypeId" ColumnName="TransactionTypeId" />
                 <ScalarProperty Name="DefaultAmount" ColumnName="DefaultAmount" />
@@ -818,6 +861,7 @@
                 <ScalarProperty Name="AmountContributed" ColumnName="AmountContributed" />
                 <ScalarProperty Name="SurplusDeficit" ColumnName="SurplusDeficit" />
                 <ScalarProperty Name="WhenCreated" ColumnName="WhenCreated" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -844,36 +888,7 @@
                 <ScalarProperty Name="GoLiveDate" ColumnName="GoLiveDate" />
                 <ScalarProperty Name="WhenCreated" ColumnName="WhenCreated" />
                 <ScalarProperty Name="WhenModified" ColumnName="WhenModified" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="FrequencyTypes">
-            <EntityTypeMapping TypeName="SaveYourBaconModel.FrequencyType">
-              <MappingFragment StoreEntitySet="FrequencyType">
-                <ScalarProperty Name="FrequencyName" ColumnName="FrequencyName" />
-                <ScalarProperty Name="FrequencyId" ColumnName="FrequencyId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Notifications">
-            <EntityTypeMapping TypeName="SaveYourBaconModel.Notification">
-              <MappingFragment StoreEntitySet="Notifications">
-                <ScalarProperty Name="WhenCreated" ColumnName="WhenCreated" />
-                <ScalarProperty Name="MessageBody" ColumnName="MessageBody" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Subject" ColumnName="Subject" />
-                <ScalarProperty Name="NotificationFrom" ColumnName="NotificationFrom" />
-                <ScalarProperty Name="NotificationDate" ColumnName="NotificationDate" />
-                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="NotificationStatus">
-            <EntityTypeMapping TypeName="SaveYourBaconModel.NotificationStatu">
-              <MappingFragment StoreEntitySet="NotificationStatus">
-                <ScalarProperty Name="StatusName" ColumnName="StatusName" />
-                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -29,6 +29,7 @@ import { UserService } from './services/user.service';
 import { MyAccountComponent } from './my-account/my-account.component';
 import { NotificationsComponent, ViewNotificationDialog } from './notifications/notifications.component';
 import { RegisterPageComponent } from './register-page/register-page.component';
+import { UserPreferencesComponent } from './user-preferences/user-preferences.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -41,6 +42,7 @@ const appRoutes: Routes = [
   { path: 'create-income', component: CreateIncomeComponent, canActivate: [AuthGuard] },
   { path: 'create-income/:id', component: CreateIncomeComponent, canActivate: [AuthGuard] },
   { path: 'my-account', component: MyAccountComponent, canActivate: [AuthGuard] },  
+  { path: 'preferences', component: UserPreferencesComponent, canActivate: [AuthGuard] },    
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
 ];
 
@@ -66,7 +68,8 @@ const appRoutes: Routes = [
     LoginComponent,
     MyAccountComponent,
     NotificationsComponent,
-    RegisterPageComponent
+    RegisterPageComponent,
+    UserPreferencesComponent
   ],
   imports: [
     BrowserModule,

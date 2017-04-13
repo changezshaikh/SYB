@@ -1,15 +1,15 @@
 <section class="IncomeOverview bottom-spacing">
-  <div class="loader__container" *ngIf="!income.length">
+  <div class="loader__container" *ngIf="loading">
     <md-spinner></md-spinner>
   </div>
   <div class="boxed-container datagrid__container">
     <p-dataTable [value]="income" sortField="IncomeDate" [rows]="4" [paginator]="income.length>4" [pageLinks]="3" >
         <p-header>Income Overview</p-header>
-        <p-column field="IncomeSourceType.IncomeSourceName" header="Income Source" sortable="true"></p-column>
-        <p-column field="IncomeDate" header="Pay Date" sortable="true">
-            <template let-col let-car="rowData" pTemplate="body">
-                {{car[col.field] | date: 'dd/MM/y'}}
-            </template>
+        <p-column field="IncomeSourceName" header="Income Source" sortable="true"></p-column>
+        <p-column field="BillDate" header="Pay Date" sortable="true">
+            <ng-template let-col let-income="rowData" pTemplate="body">
+                {{income[col.field] | date: 'dd/MM/y'}}
+            </ng-template>
         </p-column>
         <p-column field="Frequency" header="Frequency" sortable="true"></p-column>
     </p-dataTable>

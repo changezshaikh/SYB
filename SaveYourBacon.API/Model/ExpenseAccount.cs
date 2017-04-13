@@ -26,7 +26,6 @@ namespace SaveYourBacon.API.Model
         public System.DateTime WhenCreated { get; set; }
         public Nullable<System.DateTime> WhenModified { get; set; }
     
-        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Expense> Expenses { get; set; }
     }

@@ -9,11 +9,12 @@ namespace SaveYourBacon.API.Model
     {
         public string ExpenseName { get; set; }
         public string ExpenseAccountName { get; set; }
+        public string IncomeSourceName { get; set; }
+        public string Frequency { get; set; }
 
         public TransactionRecord(Transaction parent)
         {
             TransactionId = parent.TransactionId;
-            TransactionPeriod = parent.TransactionPeriod;
             TransactionPeriodId = parent.TransactionPeriodId;
             TransactionSourceId = parent.TransactionSourceId;
             TransactionTypeId = parent.TransactionTypeId;

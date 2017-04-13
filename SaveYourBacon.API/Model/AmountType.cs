@@ -14,20 +14,8 @@ namespace SaveYourBacon.API.Model
     
     public partial class AmountType
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public AmountType()
-        {
-            this.Expenses = new HashSet<Expense>();
-            this.Incomes = new HashSet<Income>();
-        }
-    
         public int AmountTypeId { get; set; }
         public string TypeName { get; set; }
         public System.DateTime WhenCreated { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Expense> Expenses { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Income> Incomes { get; set; }
     }
 }

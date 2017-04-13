@@ -1,34 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Expense } from '../data-objects/expense';
+import { Transaction } from '../data-objects/transaction';
 
-import { ExpenseService } from '../services/expense.service';
+import { TransactionService } from '../services/transaction.service';
+import { User } from '../data-objects/user';
 
-declare var $:any;
+declare var $: any;
 
 @Component({
   selector: 'important-dates',
   templateUrl: './important-dates.component.html',
   styleUrls: ['./important-dates.component.scss'],
-  providers: [ExpenseService]
+  providers: [TransactionService]
 })
 export class ImportantDatesComponent implements OnInit {
 
   errorMessage: string;
-  importantDates: Expense[] = [];
+  importantDates: Transaction[] = [];
   mode = 'Observable';
-  userId = 1000;
+  currentUser: User;
+  loading: boolean = true;
 
-  constructor(private expenseService: ExpenseService){}
+  constructor(private transactionService: TransactionService) { }
 
   ngOnInit() {
-      this.getExpenses();
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.getExpenses();
   }
 
-  getExpenses(){
-      this.expenseService.getImportantExpenseDates(this.userId)
-                        .subscribe(data => this.importantDates = data,
-                                    error =>  this.errorMessage = <any>error);
+  getExpenses() {
+    this.transactionService.getImportantExpenseDates(this.currentUser.UserId)
+      .subscribe(data => this.importantDates = data,
+      error => this.errorMessage = <any>error,
+      () => { this.loading = false });
   }
 
 }

@@ -5,6 +5,7 @@ import { IncomeRecord } from '../data-objects/IncomeRecord';
 import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
 import { ConfirmDialogComponent } from '../common/confirm-dialog.component';
 import { ConfirmDialog as ConfirmDialogModel } from '../data-objects/confirmDialog';
+import { User } from '../data-objects/user';
 
 declare let _: any;
 
@@ -19,18 +20,21 @@ export class IncomesComponent implements OnInit {
   errorMessage: string;
   income: Income[] = [];
   mode = 'Observable';
-  userId = 1000;
+  currentUser: User;
+  loading: boolean = true;
 
   constructor(private incomeService: IncomeService, public snackBar: MdSnackBar, public dialog: MdDialog) { }
 
   ngOnInit() {
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getIncome();
   }
 
   getIncome() {
-    this.incomeService.getIncome(this.userId)
+    this.incomeService.getIncome(this.currentUser.UserId)
       .subscribe(data => this.income = data,
-      error => this.errorMessage = <any>error);
+      error => this.errorMessage = <any>error,
+      () => {this.loading = false});
   }
 
   handleIncomeEdit(event) {

@@ -31,12 +31,6 @@ export class ExpenseService {
                     .catch(this.handleError);
   }
 
-  getImportantExpenseDates(userId){
-    return this.http.get(this.expenseUrl + "/getimportantdatesforuser/" + userId)
-                    .map(res => res.json())
-                    .catch(this.handleError);
-  }
-
   addExpenseForUser(expenseRecord: ExpenseRecord){
 
     let headers = new Headers({ 'Content-Type': 'application/json' });

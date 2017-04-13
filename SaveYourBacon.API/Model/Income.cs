@@ -22,11 +22,11 @@ namespace SaveYourBacon.API.Model
         public string LinkedExpenses { get; set; }
         public int UserId { get; set; }
         public int ExpenseAmountTypeId { get; set; }
-        public string NewIncomeName { get; set; }
         public System.DateTime WhenCreated { get; set; }
-
-        public virtual AmountType AmountType { get; set; }
+        public string NewIncomeName { get; set; }
+        public Nullable<int> IsActive { get; set; }
+        public Nullable<int> IsProcessed { get; set; }
+    
         public virtual IncomeSourceType IncomeSourceType { get; set; }
-        public virtual User User { get; set; }
     }
 }

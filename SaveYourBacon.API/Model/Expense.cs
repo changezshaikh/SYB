@@ -24,9 +24,9 @@ namespace SaveYourBacon.API.Model
         public int ExpenseAmountTypeId { get; set; }
         public Nullable<System.DateTime> WhenCreated { get; set; }
         public Nullable<System.DateTime> WhenModified { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
+        public Nullable<int> IsProcessed { get; set; }
     
-        public virtual AmountType AmountType { get; set; }
         public virtual ExpenseAccount ExpenseAccount { get; set; }
-        public virtual User User { get; set; }
     }
 }

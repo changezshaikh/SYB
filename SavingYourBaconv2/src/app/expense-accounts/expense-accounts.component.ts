@@ -7,6 +7,8 @@ import { ExpenseRecord } from '../data-objects/expenseRecord';
 import { MdDialog, MdDialogRef, MdDialogConfig, MdSnackBar } from '@angular/material';
 import { ConfirmDialogComponent } from '../common/confirm-dialog.component';
 import { ConfirmDialog as ConfirmDialogModel } from '../data-objects/confirmDialog';
+import {User} from '../data-objects/user';
+import recordUtils from '../utilities/recordUtilities';
 
 declare let _: any;
 
@@ -21,27 +23,32 @@ export class ExpenseAccountsComponent implements OnInit {
   expenses: Expense[] = [];
   mode = 'Observable';
   newExpenseAccountName: string;
-  userId = 1000;
+  currentUser: User;
   errorMessage: string;
   expenseAccounts: ExpenseType[] = [];
+  loading: boolean = true;
+  expenseAccountExists: boolean = false;
 
   constructor(public dialog: MdDialog, private expenseService: ExpenseService, public snackBar: MdSnackBar) { }
 
   ngOnInit() {
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.getExpenseTypesForUser();
     this.getExpenses();
   }
 
   getExpenseTypesForUser() {
-    this.expenseService.getExpenseTypes(this.userId)
+    this.expenseService.getExpenseTypes(this.currentUser.UserId)
       .subscribe(data => this.expenseAccounts = data,
-      error => this.errorMessage = <any>error);
+      error => this.errorMessage = <any>error,
+      () => {this.expenseAccountExists = this.expenseAccounts.length > 0});
   }
 
   getExpenses() {
-    this.expenseService.getExpense(this.userId)
-      .subscribe(data => this.expenses = data,
-      error => this.errorMessage = <any>error);
+    this.expenseService.getExpense(this.currentUser.UserId)
+      .subscribe(data => {this.expenses = data; console.log(data);},
+      error => this.errorMessage = <any>error,
+      () => {this.loading = false});
   }
 
   handleExpenseEdit(event) {
@@ -99,7 +106,7 @@ export class ExpenseAccountsComponent implements OnInit {
 
       let expenseAccountType: ExpenseAccountType = {
         expenseAccountName: this.newExpenseAccountName,
-        userId: this.userId
+        userId: this.currentUser.UserId
       };
 
       let that = this;
@@ -111,6 +118,10 @@ export class ExpenseAccountsComponent implements OnInit {
         },
         error => this.errorMessage = <any>error);
     });
+  }
+
+  getTypeName(id){
+    return recordUtils.getAmountTypeName(id);
   }
 
 }

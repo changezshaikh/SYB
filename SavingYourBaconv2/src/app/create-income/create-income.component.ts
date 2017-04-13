@@ -21,6 +21,7 @@ import {Router, ActivatedRoute, Params} from '@angular/router';
 import recordUtils from '../utilities/recordUtilities';
 
 import dateUtils from '../utilities/dateUtilities';
+import {User} from '../data-objects/user';
 
 declare var jQuery: any;
 declare var _: any;
@@ -40,7 +41,7 @@ export class CreateIncomeComponent implements OnInit {
   incomeAmount: string;
   incomeDate: Date;
   mode = 'Observable';
-  userId = 1000;
+  currentUser: User;
   recurringType: number;
   incomeTypeOptions = [];
   incomes = [];
@@ -48,9 +49,11 @@ export class CreateIncomeComponent implements OnInit {
   newIncomeName: string;
   expenseTypes: SelectItem[];
   isInEditMode = false;
+  loading: boolean = true;
+  assignToExpenses: boolean = false;
 
   incomeId: number = 0;
-  selectedExpenseTypes: string[];
+  selectedExpenseTypes: string[] = [];
   selectedIncomeSourceId: number;
   selectedIncomeType: number;
   selectedFrequencyType: string;
@@ -58,7 +61,7 @@ export class CreateIncomeComponent implements OnInit {
   constructor(private incomeService: IncomeService, private expenseService: ExpenseService, public dialog: MdDialog, public snackBar: MdSnackBar, private utilityService: UtilityService, private router:Router, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
-
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.incomeTypeOptions = recordUtils.getIncomeTypeOptions();
     this.recurringTypes = recordUtils.getRecurringTypes();
 
@@ -66,6 +69,8 @@ export class CreateIncomeComponent implements OnInit {
     this.getFrequencyTypes();
     this.getIncomes();
     this.getExpenseTypes();
+
+    let that = this;
 
      // subscribe to router event
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -76,7 +81,7 @@ export class CreateIncomeComponent implements OnInit {
                           .subscribe(data => {
                             if(data){
                               this.populateFormForEdit(data[0]);
-                              console.log(data[0]);
+                              that.loading = false;
                             }
                           },
                           error => this.errorMessage = <any>error);
@@ -108,6 +113,7 @@ export class CreateIncomeComponent implements OnInit {
     }
      
     this.selectedExpenseTypes = _.split(income.LinkedExpenses, ",");
+    this.assignToExpenses = this.selectedExpenseTypes.length > 0;
   }
 
   getFrequencyTypes(){
@@ -117,13 +123,14 @@ export class CreateIncomeComponent implements OnInit {
   }
 
   getIncomes(){
-    this.incomeService.getIncome(this.userId)
+    this.incomeService.getIncome(this.currentUser.UserId)
                         .subscribe(data => this.incomes = data,
-                                    error =>  this.errorMessage = <any>error);
+                                    error =>  this.errorMessage = <any>error,
+                                    () => {this.loading = false;});
   }
 
   getExpenseTypes(){
-    this.expenseService.getExpenseTypes(this.userId)
+    this.expenseService.getExpenseTypes(this.currentUser.UserId)
                         .subscribe(data => {
                                           if(!data){
                                             return;
@@ -149,12 +156,12 @@ export class CreateIncomeComponent implements OnInit {
       IncomeId: this.incomeId,
       IncomeSourceTypeId: this.selectedIncomeSourceId,
       IncomeName: this.selectedIncomeSourceId == -1 ? this.newIncomeName : "",
-      UserId: this.userId.toString(),
-      Frequency: this.selectedFrequencyType,
+      UserId: this.currentUser.UserId.toString(),
+      Frequency: this.selectedIncomeType == -1 ? this.selectedFrequencyType : "",
       IncomeAmount: this.incomeAmount,
-      IncomeDate: this.incomeDate !== null ? dateUtils.parseDateString(this.incomeDate.toLocaleDateString()) : "",
+      IncomeDate: this.incomeDate !== null ? this.incomeDate.toLocaleDateString('en-US') : "",
       ExpenseAmountTypeId: this.selectedIncomeType == -1 ? this.recurringType.toString() : this.selectedIncomeType.toString(),
-      LinkedExpenses: this.selectedExpenseTypes.join(",")
+      LinkedExpenses: this.assignToExpenses && this.selectedExpenseTypes.length ? this.selectedExpenseTypes.join(",") : ""
     };
 
     let that = this;
@@ -163,13 +170,14 @@ export class CreateIncomeComponent implements OnInit {
       this.incomeService.updateIncome(incomeRecord)
                           .subscribe(function(){
                                       that.snackBar.open('Record Saved successfully!', '', { duration: 1000 });
-                                      //that.router.navigateByUrl('/expense-accounts');                                
+                                      that.router.navigateByUrl('/incomes');                                
                                     },
                                       error =>  this.errorMessage = <any>error);
 
     } else{
       this.incomeService.addIncomeForUser(incomeRecord)
                           .subscribe(function(){
+                                      that.snackBar.open('Record Saved successfully!', '', { duration: 1000 });
                                       that.router.navigateByUrl('incomes');                                
                                     },
                                       error =>  this.errorMessage = <any>error);

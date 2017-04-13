@@ -36,4 +36,14 @@ export default class RecordUtilities {
 
         return recurringTypes;
     }
+
+    static getAmountTypeName(id){
+        let recurringTypes = this.getRecurringTypes();
+        
+        recurringTypes.forEach(type =>{
+            if(type.id == id) return type.value;
+        });
+
+        return "One-time";
+    }
 }
