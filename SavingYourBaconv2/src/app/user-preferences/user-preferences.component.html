@@ -53,8 +53,11 @@
                 <md-error *ngIf="rPassword.touched && !rPassword.valid">Please repeat your password</md-error>
               </md-input-container>
             </div>
+            <md-card class="password-error__container" *ngIf="passwordError">
+              Old Password does not match!
+            </md-card>
             <md-card-actions>
-              <button md-raised-button [disabled]="!f2.form.valid">Save</button>
+              <button md-raised-button [disabled]="!f2.form.valid || loading">Save</button>
             </md-card-actions>
           </form>
         </md-tab>

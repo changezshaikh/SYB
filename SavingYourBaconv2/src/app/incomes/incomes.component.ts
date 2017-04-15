@@ -40,8 +40,8 @@ export class IncomesComponent implements OnInit {
   handleIncomeEdit(event) {
 
     let that = this;
-
-    this.incomeService.updateIncome(event.data)
+    
+    this.incomeService.updateIncome(event.data, true)
       .subscribe(data => {
         that.snackBar.open('Income record updated successfully!', '', { duration: 1000 });
       },

@@ -22,6 +22,7 @@ export class UserPreferencesComponent implements OnInit {
   firstName: string;
   lastName: string;
   email: string;
+  passwordError: boolean = false;
 
   currentUser: User;
 
@@ -37,11 +38,21 @@ export class UserPreferencesComponent implements OnInit {
 
   saveUserPassword() {
     let that = this;
+    this.loading = true;
     this.authService.changePassword(this.currentUser.UserId, this.oldPassword, this.newPassword)
-      .subscribe(function () {
-        that.snackBar.open('New Password saved successfully!', '', { duration: 2000 });
+      .subscribe(function (response) {
+        if(response){
+          that.snackBar.open('New Password saved successfully!', '', { duration: 2000 });
+          that.passwordError = false;
+          that.oldPassword = "";
+          that.newPassword = "";
+          that.repeatPassword = "";
+        } else {
+          that.passwordError = true;
+        }
       },
-      error => this.errorMessage = <any>error);
+      error => this.errorMessage = <any>error,
+      () => that.loading = false);
   }
 
   saveUserEmail() {

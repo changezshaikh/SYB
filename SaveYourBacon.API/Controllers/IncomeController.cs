@@ -75,19 +75,18 @@ namespace SaveYourBacon.API.Controllers
 
         // PUT: api/Income/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult UpdateIncomeAmount(int id, Income income)
+        public IHttpActionResult UpdateIncomeAmount(Income income)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != income.IncomeId)
-            {
-                return BadRequest();
-            }
+            var existingIncome = db.Incomes.Where(i => i.IncomeId == income.IncomeId).FirstOrDefault();
 
-            db.Entry(income).State = EntityState.Modified;
+            existingIncome.IncomeAmount = income.IncomeAmount;
+
+            db.Entry(existingIncome).State = EntityState.Modified;
 
             try
             {
@@ -95,7 +94,7 @@ namespace SaveYourBacon.API.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!IncomeExists(id))
+                if (!IncomeExists(income.IncomeId))
                 {
                     return NotFound();
                 }

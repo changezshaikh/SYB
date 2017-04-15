@@ -31,6 +31,7 @@ export class CreateExpenseComponent implements OnInit {
   expenseTypes: ExpenseType[];
   frequencyTypes: SelectOption[];
   expenseNames: ExpenseType[];
+  selectedExpenseRecord: any;
   selectedExpenseAccount: number;
   selectedExpenseName: string;
   selectedFrequencyType: string;
@@ -65,8 +66,6 @@ export class CreateExpenseComponent implements OnInit {
     this.expenseTypeOptions = recordUtils.getIncomeTypeOptions();
     this.recurringTypes = recordUtils.getRecurringTypes();
 
-    this.getExpenseTypesForUser();
-    // this.getExistingExpenseTypesForUser();
     this.getFrequencyTypes();
 
     // subscribe to router event
@@ -77,10 +76,28 @@ export class CreateExpenseComponent implements OnInit {
         this.expenseService.getExpenseForEdit(expenseId)
           .subscribe(data => {
             if (data) {
-              this.populateFormForEdit(data[0]);
+              this.selectedExpenseRecord = data[0];
+
+              this.expenseService.getExpenseTypes(this.currentUser.UserId)
+              .subscribe(data => {
+                this.expenseTypes = data;
+                this.updateExpenseNames(this.selectedExpenseRecord.ExpenseAccountId);
+              },
+              error => this.errorMessage = <any>error,
+              () => {
+                this.populateFormForEdit(this.selectedExpenseRecord);
+              });
+              //this.getExistingExpenseTypesForUser(data[0]);
             }
           },
-          error => this.errorMessage = <any>error);
+          error => this.errorMessage = <any>error,
+          () => {
+            
+            this.loading = false
+          });
+      }
+      else{
+        this.getExpenseTypesForUser();        
       }
     });
   }
@@ -121,12 +138,12 @@ export class CreateExpenseComponent implements OnInit {
       () => {this.loading = false;});
   }
 
-  getExistingExpenseTypesForUser() {
+  getExistingExpenseTypesForUser(expenseRecord) {
     let that = this;
     this.expenseService.getExpenseTypes(this.currentUser.UserId)
       .subscribe(data => {
         that.expenseTypes = data;
-        that.updateExpenseNames(this.expenseTypes[0]);
+        that.updateExpenseNames(expenseRecord.ExpenseAccountId);
       },
       error => this.errorMessage = <any>error);
   }

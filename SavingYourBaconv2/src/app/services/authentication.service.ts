@@ -68,10 +68,10 @@ export class AuthenticationService {
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
                     localStorage.setItem('id_token', token);
 
-                    // return true to indicate successful login
+                    // return true to indicate successful password change
                     return true;
                 } else {
-                    // return false to indicate failed login
+                    // return false to indicate wrong password
                     return false;
                 }
             }).catch(this.handleError);

@@ -82,6 +82,10 @@ namespace SaveYourBacon.API.Controllers
                         var token = CreateToken(existingUser, out dbUser);
                         response = Request.CreateResponse(new { token, dbUser });
                     }
+                    else
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.NoContent);
+                    }
                 }
             }
             else

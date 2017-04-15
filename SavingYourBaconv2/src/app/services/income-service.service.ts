@@ -56,25 +56,25 @@ export class IncomeService {
                           .catch(this.handleError);
   }
 
-  updateIncome(incomeRecord: IncomeRecord){
+  updateIncome(incomeRecord: IncomeRecord, onlyUpdateAmount: boolean){
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
-    //let incomeDate = dateUtils.parseDateString(incomeRecord.incomeDate);
+    let url = onlyUpdateAmount ? this.incomeUrl + "/UpdateIncomeAmount" : this.incomeUrl + "/PutIncome";
 
-    return this.http.put(this.incomeUrl + "/putincome", 
-                          { incomeId: incomeRecord.IncomeId,
-                            incomeSourceTypeId: incomeRecord.IncomeSourceTypeId, 
-                            newIncomeName: incomeRecord.IncomeName, 
-                            userId: incomeRecord.UserId, 
-                            frequency: incomeRecord.Frequency, 
-                            incomeAmount: incomeRecord.IncomeAmount, 
-                            incomeDate: incomeRecord.IncomeDate.toString(),
-                            linkedExpenses: incomeRecord.LinkedExpenses,
-                            expenseAmountTypeId: incomeRecord.ExpenseAmountTypeId }, 
-                          options)
+
+    if(onlyUpdateAmount){
+      return this.http.post(url, incomeRecord, options)
                           .map(res => res.json())
                           .catch(this.handleError);
+    }
+    else{
+      return this.http.put(url, incomeRecord, options)
+                          .map(res => res.json())
+                          .catch(this.handleError);
+    }
+
+    
   }
 
   deleteIncome(incomeId: number){
